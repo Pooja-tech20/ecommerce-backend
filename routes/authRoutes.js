@@ -4,7 +4,7 @@ const router = express.Router();
 const {
   register,
   login,
-  adminLogin,
+ 
 } = require("../controllers/authController");
 
 const  protect  = require("../middleware/authMiddleware");
@@ -12,6 +12,6 @@ const  protect  = require("../middleware/authMiddleware");
 router.post("/register", register);
 
 router.post("/login", login);
-router.post("/admin/login", adminLogin);
+//router.post("/admin/login", adminLogin);
 
 module.exports = router;

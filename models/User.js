@@ -9,12 +9,13 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-    email: {
+    phone: {
       type: String,
       required: true,
       unique: true,
-      lowercase: true,
       trim: true,
+      minlength: 10,
+      maxlength: 10,
     },
 
     password: {
@@ -34,14 +35,12 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Hash password before saving
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
 
   this.password = await bcrypt.hash(this.password, 10);
 });
 
-// Compare password
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

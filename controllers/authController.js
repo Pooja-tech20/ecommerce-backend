@@ -1,22 +1,24 @@
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
-const bcrypt = require("bcryptjs");
 
-// Register User
+// ================= Register =================
 
 const register = async (req, res) => {
   try {
-    const { fullName, email, password, confirmPassword } = req.body;
+    const {
+      fullName,
+      phone,
+      password,
+      confirmPassword,
+    } = req.body;
 
-    // Check required fields
-    if (!fullName || !email || !password || !confirmPassword) {
+    if (!fullName || !phone || !password || !confirmPassword) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
 
-    // Check password match
     if (password !== confirmPassword) {
       return res.status(400).json({
         success: false,
@@ -24,37 +26,35 @@ const register = async (req, res) => {
       });
     }
 
-    // Check existing user
-    const userExists = await User.findOne({ email });
+    const phoneExists = await User.findOne({ phone });
 
-    if (userExists) {
+    if (phoneExists) {
       return res.status(400).json({
         success: false,
-        message: "Email already exists",
+        message: "Phone already exists",
       });
     }
 
-    // Create new user
     const user = await User.create({
       fullName,
-      email,
+      phone,
       password,
     });
 
-    // Response
     res.status(201).json({
       success: true,
-      message: "Registration successful",
+      message: "Registration Successful",
       token: generateToken(user._id),
       user: {
         id: user._id,
         fullName: user.fullName,
-        email: user.email,
+        phone: user.phone,
+        role: user.role,
       },
     });
+
   } catch (error) {
-    console.error("REGISTER ERROR:", error);
-     console.error(error);
+    console.log(error);
 
     res.status(500).json({
       success: false,
@@ -63,53 +63,53 @@ const register = async (req, res) => {
   }
 };
 
-// Login User
+// ================= Login =================
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
 
-    // Check required fields
-    if (!email || !password) {
+    const { phone, password } = req.body;
+
+    if (!phone || !password) {
       return res.status(400).json({
         success: false,
-        message: "Email and password are required",
+        message: "Phone and Password are required",
       });
     }
 
-    // Find user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ phone });
 
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Invalid email or password",
+        message: "Invalid phone or password",
       });
     }
 
-    // Compare password
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: "Invalid email or password",
+        message: "Invalid phone or password",
       });
     }
 
-    // Response
     res.status(200).json({
       success: true,
-      message: "Login successful",
+      message: "Login Successful",
       token: generateToken(user._id),
       user: {
         id: user._id,
         fullName: user.fullName,
-        email: user.email,
+        phone: user.phone,
+        role: user.role,
       },
     });
+
   } catch (error) {
-    console.error("LOGIN ERROR:", error);
+
+    console.log(error);
 
     res.status(500).json({
       success: false,
@@ -117,8 +117,6 @@ const login = async (req, res) => {
     });
   }
 };
-
-// Export Controllers
 
 module.exports = {
   register,

@@ -1,6 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
+const upload = require("../config/multer");
 
 const {
   createProduct,
@@ -10,7 +11,12 @@ const {
   deleteProduct,
 } = require("../controllers/productController");
 
-router.post("/", createProduct);
+
+router.post(
+    "/",
+    upload.single("image"),
+    createProduct
+);
 
 router.get("/", getProducts);
 

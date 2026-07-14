@@ -189,7 +189,3 @@ module.exports = {
   login,
   adminLogin,
 };
-module.exports = {
-  register,
-  login,
-};

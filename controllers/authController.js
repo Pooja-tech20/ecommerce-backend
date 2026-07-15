@@ -4,6 +4,7 @@ const generateToken = require("../utils/generateToken");
 // ================= Register =================
 
 const register = async (req, res) => {
+  console.log(req.body);
   try {
     const {
       fullName,

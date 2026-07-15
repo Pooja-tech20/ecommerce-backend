@@ -18,7 +18,7 @@ router.post(
     createProduct
 );
 
-router.get("/", getProducts);
+router.get("/", getProducts); 
 
 router.get("/:id", getProductById);
 

@@ -1,11 +1,18 @@
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
+const bcrypt = require("bcryptjs");
 
-// ================= Register =================
-
+// Register
 const register = async (req, res) => {
   console.log(req.body);
   try {
+    if (!req.body) {
+      return res.status(400).json({
+        success: false,
+        message: "Request body is missing",
+      });
+    }
+
     const {
       fullName,
       phone,
@@ -64,8 +71,7 @@ const register = async (req, res) => {
   }
 };
 
-// ================= Login =================
-
+// Login
 const login = async (req, res) => {
   try {
 
@@ -87,7 +93,7 @@ const login = async (req, res) => {
       });
     }
 
-    const isMatch = await user.matchPassword(password);
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(401).json({
@@ -109,7 +115,6 @@ const login = async (req, res) => {
     });
 
   } catch (error) {
-
     console.log(error);
 
     res.status(500).json({
@@ -119,74 +124,7 @@ const login = async (req, res) => {
   }
 };
 
-// Admin Login
-
-const adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Check required fields
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Email and password are required",
-      });
-    }
-
-    // Find admin only
-    const admin = await User.findOne({
-      email,
-      role: "admin",
-    });
-
-    if (!admin) {
-      return res.status(401).json({
-        success: false,
-        message: "Admin not found",
-      });
-    }
-
-    // Compare password
-console.log("Entered Password:", password);
-console.log("Stored Password:", admin.password);
-
-const isMatch = await admin.matchPassword(password);
-
-console.log("Password Match:", isMatch);
-
-if (!isMatch) {
-  return res.status(401).json({
-    success: false,
-    message: "Invalid email or password",
-  });
-}
-    // Success
-    res.status(200).json({
-      success: true,
-      message: "Admin login successful",
-      token: generateToken(admin._id),
-      user: {
-        id: admin._id,
-        fullName: admin.fullName,
-        email: admin.email,
-        role: admin.role,
-      },
-    });
-
-  } catch (error) {
-    console.error("ADMIN LOGIN ERROR:", error);
-
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-// Export Controllers
-
 module.exports = {
   register,
   login,
-  adminLogin,
 };

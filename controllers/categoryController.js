@@ -17,6 +17,7 @@ exports.createCategory = async (req, res) => {
         message:"Category name is required"
       });
     }
+    
 
     const category = await Category.create({
       name,

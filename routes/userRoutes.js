@@ -22,6 +22,7 @@ router.put(
   updateProfile
 );
 
+
 // Change Password
 router.put(
   "/change-password",

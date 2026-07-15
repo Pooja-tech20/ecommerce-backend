@@ -35,16 +35,20 @@ exports.addToCart = async (req, res) => {
     );
 
     if (itemIndex > -1) {
-      cart.items[itemIndex].quantity += quantity;
+      cart.items[itemIndex].quantity += Number(quantity);
     } else {
       cart.items.push({
         product: product._id,
-        quantity,
+        quantity: Number(quantity),
         priceAtAdd: product.price,
       });
     }
 
+    // Save Cart
     await cart.save();
+
+    // Populate Product Details
+    await cart.populate("items.product");
 
     res.status(200).json({
       success: true,
@@ -53,6 +57,8 @@ exports.addToCart = async (req, res) => {
     });
 
   } catch (error) {
+
+    console.log(error);
 
     res.status(500).json({
       success: false,
@@ -80,6 +86,8 @@ exports.getCart = async (req, res) => {
     });
 
   } catch (error) {
+
+    console.log(error);
 
     res.status(500).json({
       success: false,
@@ -122,17 +130,27 @@ exports.updateCart = async (req, res) => {
       });
     }
 
-    item.quantity = quantity;
+    item.quantity = Number(quantity);
+
+    if (item.quantity <= 0) {
+      cart.items = cart.items.filter(
+        (i) => i.product.toString() !== req.params.productId
+      );
+    }
 
     await cart.save();
 
-    res.json({
+    await cart.populate("items.product");
+
+    res.status(200).json({
       success: true,
       message: "Quantity updated",
       cart,
     });
 
   } catch (error) {
+
+    console.log(error);
 
     res.status(500).json({
       success: false,
@@ -168,13 +186,17 @@ exports.removeCartItem = async (req, res) => {
 
     await cart.save();
 
-    res.json({
+    await cart.populate("items.product");
+
+    res.status(200).json({
       success: true,
       message: "Item removed",
       cart,
     });
 
   } catch (error) {
+
+    console.log(error);
 
     res.status(500).json({
       success: false,
@@ -199,15 +221,21 @@ exports.clearCart = async (req, res) => {
 
     if (cart) {
       cart.items = [];
+
       await cart.save();
+
+      await cart.populate("items.product");
     }
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: "Cart cleared",
+      cart,
     });
 
   } catch (error) {
+
+    console.log(error);
 
     res.status(500).json({
       success: false,

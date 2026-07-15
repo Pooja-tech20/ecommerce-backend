@@ -1,6 +1,7 @@
 const Order = require("../models/Order");
 const OrderItem = require("../models/OrderItem");
 const Product = require("../models/Product");
+const Notification = require("../models/Notification");
 
 // ================================
 // Generate Order Number
@@ -70,6 +71,12 @@ const createOrder = async (req, res) => {
       totalAmount,
       paymentMethod,
     });
+    await Notification.create({
+    user: req.user._id,
+    title: "Order Placed",
+    message: `Your order ${order.orderNumber} has been placed successfully.`,
+    type: "order",
+});
 
     for (const item of items) {
       const product = await Product.findById(item.product);

@@ -15,7 +15,10 @@ const orderRoutes = require("./routes/orderRoutes");
 const addressRoutes = require("./routes/addressRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
 const adminAccessRoutes = require("./routes/adminaccessRoutes");
+
 const reviewRoutes = require("./routes/reviewRoutes");
+const productSearchRoutes = require("./routes/productSearchRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
@@ -47,6 +50,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/address", addressRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/admin-access", adminAccessRoutes);
+app.use("/api/product-search", productSearchRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use("/api/reviews", reviewRoutes);
 

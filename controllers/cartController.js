@@ -1,16 +1,10 @@
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 
-// =======================
 // Add To Cart
-// =======================
-
 exports.addToCart = async (req, res) => {
   try {
-
-    const { productId, quantity } = req.body;
-
-    const userId = req.user._id;
+    const { productId, quantity = 1 } = req.body;
 
     const product = await Product.findById(productId);
 
@@ -21,17 +15,17 @@ exports.addToCart = async (req, res) => {
       });
     }
 
-    let cart = await Cart.findOne({ user: userId });
+    let cart = await Cart.findOne({ user: req.user._id });
 
     if (!cart) {
       cart = new Cart({
-        user: userId,
+        user: req.user._id,
         items: [],
       });
     }
 
     const itemIndex = cart.items.findIndex(
-      (item) => item.product.toString() === productId
+      item => item.product.toString() === productId
     );
 
     if (itemIndex > -1) {
@@ -47,62 +41,64 @@ exports.addToCart = async (req, res) => {
     // Save Cart
     await cart.save();
 
+<<<<<<< HEAD
     // Populate Product Details
     await cart.populate("items.product");
 
     res.status(200).json({
+=======
+    res.json({
+>>>>>>> 06a072976b25607236abdf0acf36f9524b59361b
       success: true,
-      message: "Product added to cart",
       cart,
     });
 
+<<<<<<< HEAD
   } catch (error) {
 
     console.log(error);
 
+=======
+  } catch (err) {
+>>>>>>> 06a072976b25607236abdf0acf36f9524b59361b
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: err.message,
     });
-
   }
 };
 
-// =======================
 // Get Cart
-// =======================
-
 exports.getCart = async (req, res) => {
-
   try {
 
     const cart = await Cart.findOne({
       user: req.user._id,
     }).populate("items.product");
 
-    res.status(200).json({
+    res.json({
       success: true,
       cart,
     });
 
+<<<<<<< HEAD
   } catch (error) {
 
     console.log(error);
 
+=======
+  } catch (err) {
+>>>>>>> 06a072976b25607236abdf0acf36f9524b59361b
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: err.message,
     });
-
   }
-
 };
 
-// =======================
-// Update Quantity
-// =======================
-
+// Update Cart
 exports.updateCart = async (req, res) => {
+<<<<<<< HEAD
 
   try {
 
@@ -159,13 +155,17 @@ exports.updateCart = async (req, res) => {
 
   }
 
+=======
+  res.json({
+    success: true,
+    message: "Update Cart Working",
+  });
+>>>>>>> 06a072976b25607236abdf0acf36f9524b59361b
 };
 
-// =======================
-// Remove Product
-// =======================
-
+// Remove Cart Item
 exports.removeCartItem = async (req, res) => {
+<<<<<<< HEAD
 
   try {
 
@@ -205,13 +205,17 @@ exports.removeCartItem = async (req, res) => {
 
   }
 
+=======
+  res.json({
+    success: true,
+    message: "Remove Item Working",
+  });
+>>>>>>> 06a072976b25607236abdf0acf36f9524b59361b
 };
 
-// =======================
 // Clear Cart
-// =======================
-
 exports.clearCart = async (req, res) => {
+<<<<<<< HEAD
 
   try {
 
@@ -244,4 +248,10 @@ exports.clearCart = async (req, res) => {
 
   }
 
+=======
+  res.json({
+    success: true,
+    message: "Clear Cart Working",
+  });
+>>>>>>> 06a072976b25607236abdf0acf36f9524b59361b
 };

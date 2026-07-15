@@ -12,6 +12,7 @@ const {
   clearCart,
 } = require("../controllers/cartController");
 
+
 router.post("/add", protect, addToCart);
 
 router.get("/", protect, getCart);

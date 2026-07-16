@@ -61,16 +61,44 @@ const createOrder = async (req, res) => {
       (tax || 0);
 
     const order = await Order.create({
-      orderNumber: await generateOrderNumber(),
-      user: req.user._id,
-      shippingAddress,
-      subtotal,
-      discount: discount || 0,
-      deliveryFee: deliveryFee || 0,
-      tax: tax || 0,
-      totalAmount,
-      paymentMethod,
-    });
+  orderNumber: await generateOrderNumber(),
+  user: req.user._id,
+
+  shippingAddress,
+
+  subtotal,
+
+  discount: discount || 0,
+
+  deliveryFee: deliveryFee || 0,
+
+  tax: tax || 0,
+
+  totalAmount,
+
+  paymentMethod,
+
+  // ==========================
+  // Shipping Tracking
+  // ==========================
+  tracking: {
+    status: "Order Placed",
+
+    currentLocation: "Warehouse",
+
+    estimatedDelivery: new Date(
+      Date.now() + 3 * 24 * 60 * 60 * 1000
+    ),
+
+    trackingHistory: [
+      {
+        status: "Order Placed",
+        location: "Warehouse",
+        time: new Date(),
+      },
+    ],
+  },
+});
     await Notification.create({
     user: req.user._id,
     title: "Order Placed",
@@ -95,12 +123,24 @@ const createOrder = async (req, res) => {
       await product.save();
     }
 
-    res.status(201).json({
-      success: true,
-      message: "Order placed successfully",
-      order,
-    });
-
+   res.status(201).json({
+  success: true,
+  message: "Order placed successfully",
+  order: {
+    orderNumber: order.orderNumber,
+    shippingAddress: order.shippingAddress,
+    subtotal: order.subtotal,
+    discount: order.discount,
+    deliveryFee: order.deliveryFee,
+    tax: order.tax,
+    totalAmount: order.totalAmount,
+    paymentMethod: order.paymentMethod,
+    paymentStatus: order.paymentStatus,
+    orderStatus: order.orderStatus,
+    tracking: order.tracking,
+    placedAt: order.placedAt,
+  },
+});
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -118,11 +158,21 @@ const getMyOrders = async (req, res) => {
       user: req.user._id,
     }).sort({ createdAt: -1 });
 
-    res.status(200).json({
-      success: true,
-      count: orders.length,
-      orders,
-    });
+    const formattedOrders = orders.map(order => ({
+  orderNumber: order.orderNumber,
+  totalAmount: order.totalAmount,
+  paymentMethod: order.paymentMethod,
+  paymentStatus: order.paymentStatus,
+  orderStatus: order.orderStatus,
+  tracking: order.tracking,
+  placedAt: order.placedAt,
+}));
+
+res.status(200).json({
+  success: true,
+  count: formattedOrders.length,
+  orders: formattedOrders,
+});
 
   } catch (error) {
     res.status(500).json({
@@ -138,24 +188,53 @@ const getMyOrders = async (req, res) => {
 const getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
-      .populate("user", "fullName phone");
+  .populate("user", "fullName phone");
 
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
+if (!order) {
+  return res.status(404).json({
+    success: false,
+    message: "Order not found",
+  });
+}
 
-    const items = await OrderItem.find({
-      order: order._id,
-    });
+if (!order.tracking) {
+  return res.status(200).json({
+    success: true,
+    message: "Tracking not available yet",
+    tracking: null,
+  });
+}
 
-    res.status(200).json({
-      success: true,
-      order,
-      items,
-    });
+const items = await OrderItem.find({
+  order: order._id,
+}).populate("product", "name image price");
+
+const formattedItems = items.map(item => ({
+  productName: item.productName,
+  productImage: item.productImage,
+  quantity: item.quantity,
+  price: item.price,
+  subtotal: item.subtotal,
+}));
+
+res.status(200).json({
+  success: true,
+  order: {
+    orderNumber: order.orderNumber,
+    shippingAddress: order.shippingAddress,
+    subtotal: order.subtotal,
+    discount: order.discount,
+    deliveryFee: order.deliveryFee,
+    tax: order.tax,
+    totalAmount: order.totalAmount,
+    paymentMethod: order.paymentMethod,
+    paymentStatus: order.paymentStatus,
+    orderStatus: order.orderStatus,
+    tracking: order.tracking,
+    placedAt: order.placedAt,
+  },
+  items: formattedItems,
+});
 
   } catch (error) {
     res.status(500).json({
@@ -174,11 +253,22 @@ const getAllOrders = async (req, res) => {
       .populate("user", "fullName phone")
       .sort({ createdAt: -1 });
 
-    res.status(200).json({
-      success: true,
-      count: orders.length,
-      orders,
-    });
+   const formattedOrders = orders.map(order => ({
+  orderNumber: order.orderNumber,
+  customer: order.user.fullName,
+  phone: order.user.phone,
+  totalAmount: order.totalAmount,
+  paymentStatus: order.paymentStatus,
+  orderStatus: order.orderStatus,
+  tracking: order.tracking,
+  placedAt: order.placedAt,
+}));
+
+res.status(200).json({
+  success: true,
+  count: formattedOrders.length,
+  orders: formattedOrders,
+});
 
   } catch (error) {
     res.status(500).json({
@@ -203,21 +293,75 @@ const updateOrderStatus = async (req, res) => {
         message: "Order not found",
       });
     }
+    // =========================
+// Create tracking if missing
+// =========================
+if (!order.tracking) {
+  order.tracking = {
+    status: "Order Placed",
+    currentLocation: "Warehouse",
+    estimatedDelivery: new Date(
+      Date.now() + 3 * 24 * 60 * 60 * 1000
+    ),
+    trackingHistory: [],
+  };
+}
 
-    order.orderStatus = orderStatus;
+   order.orderStatus = orderStatus;
 
-    if (orderStatus === "delivered") {
-      order.deliveredAt = new Date();
-      order.paymentStatus = "paid";
-    }
 
-    await order.save();
+// ================= Tracking Update =================
 
-    res.status(200).json({
-      success: true,
-      message: "Order status updated",
-      order,
-    });
+const locationMap = {
+  confirmed: "Warehouse",
+  packed: "Warehouse",
+  shipped: "City Warehouse",
+  out_for_delivery: "Local Delivery Hub",
+  delivered: "Customer Address",
+  cancelled: "Cancelled",
+};
+
+const statusMap = {
+  confirmed: "Confirmed",
+  packed: "Packed",
+  shipped: "Shipped",
+  out_for_delivery: "Out For Delivery",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+};
+
+order.orderStatus = orderStatus;
+
+order.tracking.status = statusMap[orderStatus];
+
+order.tracking.currentLocation = locationMap[orderStatus];
+
+order.tracking.trackingHistory.push({
+  status: statusMap[orderStatus],
+  location: locationMap[orderStatus],
+  time: new Date(),
+});
+
+if (orderStatus === "delivered") {
+  order.deliveredAt = new Date();
+  order.paymentStatus = "paid";
+}
+
+await order.save();
+
+  
+
+
+   res.status(200).json({
+  success: true,
+  message: "Order status updated",
+  order: {
+    orderNumber: order.orderNumber,
+    orderStatus: order.orderStatus,
+    paymentStatus: order.paymentStatus,
+    tracking: order.tracking,
+  },
+});
 
   } catch (error) {
     res.status(500).json({
@@ -241,6 +385,19 @@ const cancelOrder = async (req, res) => {
         message: "Order not found",
       });
     }
+    // =========================
+// Create tracking if missing
+// =========================
+if (!order.tracking) {
+  order.tracking = {
+    status: "Order Placed",
+    currentLocation: "Warehouse",
+    estimatedDelivery: new Date(
+      Date.now() + 3 * 24 * 60 * 60 * 1000
+    ),
+    trackingHistory: [],
+  };
+}
 
     if (order.orderStatus === "delivered") {
       return res.status(400).json({
@@ -262,8 +419,20 @@ const cancelOrder = async (req, res) => {
       }
     }
 
-    order.orderStatus = "cancelled";
+  order.orderStatus = "cancelled";  
+  
+order.tracking.status = "Cancelled";
+order.tracking.currentLocation = "Cancelled";
 
+if (!order.tracking.trackingHistory) {
+  order.tracking.trackingHistory = [];
+}
+
+order.tracking.trackingHistory.push({
+  status: "Cancelled",
+  location: "Cancelled",
+  time: new Date(),
+});
     await order.save();
 
     res.status(200).json({
@@ -278,7 +447,36 @@ const cancelOrder = async (req, res) => {
     });
   }
 };
+// ======================================
+// Track Order
+// ======================================
 
+const trackOrder = async (req, res) => {
+  try {
+
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    res.status(200).json({
+  success: true,
+  orderNumber: order.orderNumber,
+  tracking: order.tracking,
+});
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
 module.exports = {
   createOrder,
   getMyOrders,
@@ -286,4 +484,5 @@ module.exports = {
   getAllOrders,
   updateOrderStatus,
   cancelOrder,
+  trackOrder,
 };

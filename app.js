@@ -19,6 +19,7 @@ const adminAccessRoutes = require("./routes/adminaccessRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const productSearchRoutes = require("./routes/productSearchRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const trackingRoutes = require("./routes/trackingRoutes");
 
 const app = express();
 
@@ -52,6 +53,8 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/admin-access", adminAccessRoutes);
 app.use("/api/product-search", productSearchRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/tracking", trackingRoutes);
+
 
 app.use("/api/reviews", reviewRoutes);
 

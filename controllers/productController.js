@@ -6,18 +6,15 @@ exports.createProduct = async (req, res) => {
 
     const productData = {
       ...req.body,
-      image: req.file ? req.file.path : null
+      image: req.file ? req.file.path : null,
     };
 
-
     const product = await Product.create(productData);
-
 
     res.status(201).json({
       success: true,
       product,
     });
-
 
   } catch (error) {
 
@@ -32,7 +29,7 @@ exports.createProduct = async (req, res) => {
 // Get All Products
 exports.getProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().populate("category");
 
     res.status(200).json({
       success: true,
@@ -50,7 +47,7 @@ exports.getProducts = async (req, res) => {
 // Get Single Product
 exports.getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate("category");
 
     if (!product) {
       return res.status(404).json({
@@ -124,5 +121,28 @@ exports.deleteProduct = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+// Get Products By Category
+exports.getProductsByCategory = async (req, res) => {
+  try {
+
+    const products = await Product.find({
+      category: req.params.categoryId,
+    }).populate("category");
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      products,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
   }
 };

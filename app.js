@@ -19,7 +19,13 @@ const adminAccessRoutes = require("./routes/adminaccessRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const productSearchRoutes = require("./routes/productSearchRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+
+const trackingRoutes = require("./routes/trackingRoutes");
+
 const inventoryRoutes = require("./routes/inventoryRoutes");
+const adminUserRoutes = require("./routes/adminUserRoutes");
+const salesReportRoutes = require("./routes/salesReportRoutes");
+const adminAnalyticsRoutes = require("./routes/adminAnalyticsRoutes");
 
 const app = express();
 
@@ -53,8 +59,13 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/admin-access", adminAccessRoutes);
 app.use("/api/product-search", productSearchRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/tracking", trackingRoutes);
+
 
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/inventory", inventoryRoutes);
+app.use("/api/admin/users", adminUserRoutes);
+app.use("/api/admin/sales-report",salesReportRoutes);
+app.use("/api/admin/analytics", adminAnalyticsRoutes);
 
 module.exports = app;

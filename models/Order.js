@@ -2,21 +2,21 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema(
   {
-    // Order Number (Example: ORD10001)
+    // Order Number
     orderNumber: {
       type: String,
       required: true,
       unique: true,
     },
 
-    // User who placed the order
+    // User
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
-    // Shipping Address (Snapshot)
+    // Shipping Address
     shippingAddress: {
       fullName: {
         type: String,
@@ -85,12 +85,7 @@ const orderSchema = new mongoose.Schema(
 
     paymentStatus: {
       type: String,
-      enum: [
-        "pending",
-        "paid",
-        "failed",
-        "refunded",
-      ],
+      enum: ["pending", "paid", "failed", "refunded"],
       default: "pending",
     },
 
@@ -106,6 +101,50 @@ const orderSchema = new mongoose.Schema(
         "cancelled",
       ],
       default: "placed",
+    },
+
+    // Tracking
+    tracking: {
+      status: {
+        type: String,
+        enum: [
+          "Order Placed",
+          "Confirmed",
+          "Packed",
+          "Shipped",
+          "Out For Delivery",
+          "Delivered",
+          "Cancelled",
+        ],
+        default: "Order Placed",
+      },
+
+      currentLocation: {
+        type: String,
+        default: "Warehouse",
+      },
+
+      estimatedDelivery: {
+        type: Date,
+        default: null,
+      },
+
+      trackingHistory: [
+        {
+          status: {
+            type: String,
+          },
+
+          location: {
+            type: String,
+          },
+
+          time: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
     },
 
     // Dates

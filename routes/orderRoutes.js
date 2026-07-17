@@ -10,6 +10,7 @@ const {
   getAllOrders,
   updateOrderStatus,
   cancelOrder,
+  trackOrder,
 } = require("../controllers/orderController");
 
 // ================= User Routes =================
@@ -33,5 +34,9 @@ router.get("/", protect, getAllOrders);
 
 // Update Order Status
 router.put("/:id", protect, updateOrderStatus);
+
+router.patch("/:id/status", protect, updateOrderStatus);
+
+router.get("/track/:id", protect, trackOrder);
 
 module.exports = router;

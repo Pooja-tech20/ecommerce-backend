@@ -32,8 +32,8 @@ exports.getProfile = async (req, res) => {
 // =========================
 exports.updateProfile = async (req, res) => {
   try {
-    const { fullName, phone, address } = req.body;
 
+    const { fullName, phone, address } = req.body;
     const user = await User.findById(req.user._id);
 
     if (!user) {
@@ -45,8 +45,10 @@ exports.updateProfile = async (req, res) => {
 
     user.fullName = fullName || user.fullName;
     user.phone = phone || user.phone;
+
     if (address !== undefined) {
       user.address = address;
+
     }
 
     if (req.file) {

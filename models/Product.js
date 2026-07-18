@@ -36,6 +36,7 @@ const productSchema = new mongoose.Schema(
 
     unit: {
       type: String,
+      required:true,
       default: "1 pc",
     },
 

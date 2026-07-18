@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 // // const Order = require("../models/Order");
 // // const OrderItem = require("../models/OrderItem");
 // // const Product = require("../models/Product");
@@ -980,10 +980,10 @@
 //   trackOrder,
 // };
 
-const Order = require("../models/Order");
-=======
+//const Order = require("../models/Order");
+
 /*const Order = require("../models/Order");
->>>>>>> 08704d6c9db92085c36d8cc3d49de1352c59d6e6
+
 const OrderItem = require("../models/OrderItem");
 const Product = require("../models/Product");
 const Notification = require("../models/Notification");
@@ -1156,8 +1156,7 @@ const getMyOrders = async (req, res) => {
         placedAt: order.placedAt,
       };
     }));
-<<<<<<< HEAD
-=======
+
 
 res.status(200).json({
   success: true,
@@ -1254,7 +1253,7 @@ const getAllOrders = async (req, res) => {
   tracking: order.tracking,
   placedAt: order.placedAt,
 }));
->>>>>>> 08704d6c9db92085c36d8cc3d49de1352c59d6e6
+
 
 res.status(200).json({
   success: true,

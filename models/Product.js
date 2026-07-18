@@ -34,10 +34,28 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
 
-    unit: {
-      type: String,
-      default: "1 pc",
-    },
+  unit: {
+  type: String,
+  required: true,
+  enum: [
+    "1 pc",
+    "2 pcs",
+    "4 pcs",
+    "6 pcs",
+    "250 g",
+    "500 g",
+    "1 kg",
+    "2 kg",
+    "100 ml",
+    "250 ml",
+    "500 ml",
+    "1 L",
+    "1 loaf",
+    "1 pack",
+    "1 box"
+  ],
+  default: "1 pc",
+},
 
     image: {
       type: String,

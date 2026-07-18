@@ -39,6 +39,11 @@ const userSchema = new mongoose.Schema(
     type: String,
     default: ""
       },
+      address:{
+        type:String,
+        default:"",
+        trim:true,
+      },
        isBlocked: {
       type: Boolean,
       default: false,

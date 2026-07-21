@@ -141,4 +141,4 @@ exports.uploadProfileImage = async (req, res) => {
       message: error.message,
     });
   }
-};
+}; 

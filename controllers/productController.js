@@ -27,6 +27,26 @@ exports.createProduct = async (req, res) => {
   }
 };
 
+//Add multiple products 
+exports.createMultipleProducts = async (req, res) => {
+  try {
+    const products = req.body;
+
+    const createdProducts = await Product.insertMany(products);
+
+    res.status(201).json({
+      success: true,
+      count: createdProducts.length,
+      products: createdProducts,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // Get All Products
 exports.getProducts = async (req, res) => {
   try {

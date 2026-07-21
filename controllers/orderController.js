@@ -158,25 +158,40 @@ const getMyOrders = async (req, res) => {
       user: req.user._id,
     }).sort({ createdAt: -1 });
 
-    const formattedOrders = await Promise.all(orders.map(async (order) => {
-      const itemCount = await OrderItem.countDocuments({ order: order._id });
-      return {
-        orderNumber: order.orderNumber,
-        totalAmount: order.totalAmount,
-        itemCount,
-        paymentMethod: order.paymentMethod,
-        paymentStatus: order.paymentStatus,
-        orderStatus: order.orderStatus,
-        tracking: order.tracking,
-        placedAt: order.placedAt,
-      };
-    }));
+    const formattedOrders = await Promise.all(
+      orders.map(async (order) => {
 
-res.status(200).json({
-  success: true,
-  count: formattedOrders.length,
-  orders: formattedOrders,
-});
+        const items = await OrderItem.find({
+          order: order._id,
+        });
+
+        return {
+          orderNumber: order.orderNumber,
+          totalAmount: order.totalAmount,
+          paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
+          orderStatus: order.orderStatus,
+          tracking: order.tracking,
+          placedAt: order.placedAt,
+
+          itemCount: items.length,
+
+          items: items.map((item) => ({
+            productName: item.productName,
+            productImage: item.productImage,
+            quantity: item.quantity,
+            price: item.price,
+            subtotal: item.subtotal,
+          })),
+        };
+      })
+    );
+
+    res.status(200).json({
+      success: true,
+      count: formattedOrders.length,
+      orders: formattedOrders,
+    });
 
   } catch (error) {
     res.status(500).json({

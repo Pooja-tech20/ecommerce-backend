@@ -1,4 +1,3 @@
-
 const Order = require("../models/Order");
 const OrderItem = require("../models/OrderItem");
 const Product = require("../models/Product");
@@ -312,7 +311,7 @@ if (!order.tracking) {
   };
 }
 
-   order.orderStatus = orderStatus;
+  order.orderStatus = orderStatus;
 
 
 // ================= Tracking Update =================

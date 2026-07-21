@@ -6,13 +6,11 @@ const Product = require("../models/Product");
 exports.getInventory = async (req, res) => {
   try {
     const {
-      page = 1,
-      limit = 10,
-      search = "",
-      category,
-      status,
-      sort = "createdAt",
-    } = req.query;
+  search = "",
+  category,
+  status,
+  sort = "createdAt",
+} = req.query;
 
     const query = {};
 
@@ -42,10 +40,8 @@ exports.getInventory = async (req, res) => {
     const totalProducts = await Product.countDocuments(query);
 
     const products = await Product.find(query)
-      .populate("category", "name")
-      .sort(sort)
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+  .populate("category", "name")
+  .sort(sort);
 
     const inventory = products.map((product) => ({
       ...product.toObject(),
@@ -60,8 +56,6 @@ exports.getInventory = async (req, res) => {
     res.status(200).json({
       success: true,
       totalProducts,
-      currentPage: Number(page),
-      totalPages: Math.ceil(totalProducts / limit),
       inventory,
     });
   } catch (error) {

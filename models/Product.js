@@ -33,7 +33,6 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-
   unit: {
   type: String,
   required: true,

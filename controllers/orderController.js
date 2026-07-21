@@ -311,7 +311,7 @@ if (!order.tracking) {
   };
 }
 
-   order.orderStatus = orderStatus;
+  order.orderStatus = orderStatus;
 
 
 // ================= Tracking Update =================

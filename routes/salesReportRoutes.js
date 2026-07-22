@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const protect = require("../middleware/protect");
-const admin = require("../middleware/admin");
+const adminOnly = require("../middleware/adminOnly");
 
 const {
     getSalesReport
@@ -12,7 +12,7 @@ const {
 router.get(
     "/",
     protect,
-    admin,
+    adminOnly,
     getSalesReport
 );
 

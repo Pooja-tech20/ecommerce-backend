@@ -26,6 +26,7 @@ const inventoryRoutes = require("./routes/inventoryRoutes");
 const adminUserRoutes = require("./routes/adminUserRoutes");
 const salesReportRoutes = require("./routes/salesReportRoutes");
 const adminAnalyticsRoutes = require("./routes/adminAnalyticsRoutes");
+const pageRoutes = require("./routes/pageRoutes");
 
 const app = express();
 
@@ -67,5 +68,6 @@ app.use("/api/inventory", inventoryRoutes);
 app.use("/api/admin/users", adminUserRoutes);
 app.use("/api/admin/sales-report",salesReportRoutes);
 app.use("/api/admin/analytics", adminAnalyticsRoutes);
+app.use("/api/pages", pageRoutes);
 
 module.exports = app;

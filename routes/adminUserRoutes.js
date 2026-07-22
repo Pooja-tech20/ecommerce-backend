@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const protect = require("../middleware/protect");
-const admin = require("../middleware/admin");
+const adminOnly = require("../middleware/adminOnly");
 
 const {
   getAllUsers,
@@ -13,14 +13,14 @@ const {
   toggleUserStatus,
 } = require("../controllers/adminUserController");
 
-router.get("/", protect, admin, getAllUsers);
+router.get("/", protect, adminOnly, getAllUsers);
 
-router.get("/:id", protect, admin, getUserById);
+router.get("/:id", protect, adminOnly, getUserById);
 
-router.put("/:id", protect, admin, updateUser);
+router.put("/:id", protect, adminOnly, updateUser);
 
-router.delete("/:id", protect, admin, deleteUser);
+router.delete("/:id", protect, adminOnly, deleteUser);
 
-router.patch("/status/:id", protect, admin, toggleUserStatus);
+router.patch("/status/:id", protect, adminOnly, toggleUserStatus);
 
 module.exports = router;

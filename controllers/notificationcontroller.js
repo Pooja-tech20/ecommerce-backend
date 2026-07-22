@@ -38,7 +38,8 @@ exports.getNotifications = async (req, res) => {
 
     const notifications = await Notification.find({
       user: req.user._id,
-    }).sort({
+    }).populate("order", "orderNumber")
+    .sort({
       createdAt: -1,
     });
 

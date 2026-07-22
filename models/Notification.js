@@ -29,7 +29,11 @@ const notificationSchema = new mongoose.Schema(
       ],
       default: "order",
     },
-
+    order: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order",
+      default: null,
+    },
     isRead: {
       type: Boolean,
       default: false,

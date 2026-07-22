@@ -104,12 +104,11 @@ const createOrder = async (req, res) => {
     title: "Order Placed",
     message: `Your order ${order.orderNumber} has been placed successfully.`,
     type: "order",
-    order: order._id,
 });
 
     for (const item of items) {
       const product = await Product.findById(item.product);
-
+       
       await OrderItem.create({
         order: order._id,
         product: product._id,
@@ -156,7 +155,7 @@ const createOrder = async (req, res) => {
 
 const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({
+    const orders = await OrderItem.find({
       user: req.user._id,
     }).sort({ createdAt: -1 });
 
@@ -167,6 +166,10 @@ const getMyOrders = async (req, res) => {
 
         
 
+<<<<<<< HEAD
+=======
+        const items = await OrderItem.find({
+>>>>>>> a4f2c254af720770c5c02b9e0902737b3e8a888b
           order: order._id,
         
 
@@ -231,7 +234,7 @@ if (!order.tracking) {
 
 const items = await OrderItem.find({
   order: order._id,
-}).populate("product", "name image price");
+});
 
 const formattedItems = items.map(item => ({
   productName: item.productName,
@@ -277,6 +280,7 @@ const getAllOrders = async (req, res) => {
       .populate("user", "fullName phone")
       .sort({ createdAt: -1 });
 
+<<<<<<< HEAD
    const formattedOrders = orders.map(order => ({
       
   orderNumber: order.orderNumber,
@@ -289,7 +293,35 @@ const getAllOrders = async (req, res) => {
   placedAt: order.placedAt,
       
 }));
+=======
+   const formattedOrders = await Promise.all(
+  orders.map(async (order) => {
 
+    const items = await OrderItem.find({
+      order: order._id,
+    });
+
+    return {
+      orderNumber: order.orderNumber,
+      customer: order.user.fullName,
+      phone: order.user.phone,
+      totalAmount: order.totalAmount,
+      paymentStatus: order.paymentStatus,
+      orderStatus: order.orderStatus,
+      tracking: order.tracking,
+      placedAt: order.placedAt,
+
+      items: items.map(item => ({
+        productName: item.productName,
+        productImage: item.productImage,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+    };
+>>>>>>> a4f2c254af720770c5c02b9e0902737b3e8a888b
+
+  })
+);
 res.status(200).json({
   success: true,
   count: formattedOrders.length,
@@ -683,6 +715,7 @@ const getMyOrders = async (req, res) => {
         });
 
         return {
+
           _id: order._id,
           orderNumber: order.orderNumber,
           totalAmount: order.totalAmount,
@@ -998,4 +1031,6 @@ module.exports = {
   updateOrderStatus,
   cancelOrder,
   trackOrder,
+
 };
+

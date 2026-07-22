@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const bcrypt = require("bcryptjs");
 
 // ============================
 // Get All Users
@@ -58,6 +59,7 @@ exports.getUserById = async (req, res) => {
   }
 
 };
+
 
 // ============================
 // Update User
@@ -149,4 +151,48 @@ exports.toggleUserStatus = async (req, res) => {
 
   }
 
+};
+
+// ============================
+// Change User Password
+// ============================
+
+exports.changeUserPassword = async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+
+    if (!newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password is required",
+      });
+    }
+
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "User password changed successfully",
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };

@@ -32,6 +32,7 @@ exports.createCategory = async (req, res) => {
       name: name.trim(),
       description,
       image: req.file ? req.file.path : "",
+       isActive: true,
     });
 
     res.status(201).json({
@@ -54,7 +55,6 @@ exports.createCategory = async (req, res) => {
 
 // =====================================
 // Get All Categories
-// Search + Pagination
 // =====================================
 exports.getCategories = async (req, res) => {
 
@@ -64,7 +64,9 @@ exports.getCategories = async (req, res) => {
     const limit = Number(req.query.limit) || 10;
     const keyword = req.query.keyword || "";
 
-    const filter = {};
+    const filter = {
+      isActive: true,
+    };
 
     if (keyword) {
       filter.name = {
@@ -182,7 +184,6 @@ exports.updateCategory = async (req, res) => {
 // Delete Category
 // =====================================
 exports.deleteCategory = async (req, res) => {
-
   try {
 
     const category = await Category.findById(req.params.id);
@@ -194,11 +195,13 @@ exports.deleteCategory = async (req, res) => {
       });
     }
 
-    await category.deleteOne();
+    category.isActive = false;
+
+    await category.save();
 
     res.status(200).json({
       success: true,
-      message: "Category deleted successfully",
+      message: "Category Deactivated Successfully",
     });
 
   } catch (error) {
@@ -209,5 +212,38 @@ exports.deleteCategory = async (req, res) => {
     });
 
   }
+};
 
+// =====================================
+// Activate / Deactivate Category
+// =====================================
+exports.toggleCategoryStatus = async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    category.isActive = !category.isActive;
+
+    await category.save();
+
+    res.status(200).json({
+      success: true,
+      message: category.isActive
+        ? "Category Activated Successfully"
+        : "Category Deactivated Successfully",
+      category,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };

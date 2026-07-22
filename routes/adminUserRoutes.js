@@ -11,6 +11,7 @@ const {
   updateUser,
   deleteUser,
   toggleUserStatus,
+  changeUserPassword,
 } = require("../controllers/adminUserController");
 
 router.get("/", protect, adminOnly, getAllUsers);
@@ -18,6 +19,8 @@ router.get("/", protect, adminOnly, getAllUsers);
 router.get("/:id", protect, adminOnly, getUserById);
 
 router.put("/:id", protect, adminOnly, updateUser);
+
+router.put("/:id/change-password", protect, adminOnly, changeUserPassword);
 
 router.delete("/:id", protect, adminOnly, deleteUser);
 

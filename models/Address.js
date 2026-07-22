@@ -13,7 +13,7 @@ const addressSchema = new mongoose.Schema(
       enum: ["Home", "Work", "Other"],
       default: "Home",
     },
-
+    
     fullAddress: {
       type: String,
       required: true,

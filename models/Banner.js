@@ -4,39 +4,32 @@ const bannerSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
       trim: true,
     },
-
-    subtitle: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    buttonText: {
-      type: String,
-      default: "Shop Now",
-    },
-
-    buttonLink: {
-      type: String,
-      default: "/products",
-    },
-
     image: {
       type: String,
       required: true,
     },
-
-    isActive: {
-      type: Boolean,
-      default: true,
+    link: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
+    },
+    order: {
+      type: Number,
+      default: 0, // controls display order in the carousel, lowest first
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Banner", bannerSchema);

@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 
@@ -11,7 +10,6 @@ const cartRoutes = require("./routes/cartRoutes");
 
 const userRoutes = require("./routes/userRoutes");
 
-const bannerRoutes = require("./routes/bannerRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const addressRoutes = require("./routes/addressRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
@@ -28,6 +26,7 @@ const adminUserRoutes = require("./routes/adminUserRoutes");
 const salesReportRoutes = require("./routes/salesReportRoutes");
 const adminAnalyticsRoutes = require("./routes/adminAnalyticsRoutes");
 const pageRoutes = require("./routes/pageRoutes");
+const bannerRoutes = require("./routes/bannerRoutes");
 
 const app = express();
 
@@ -55,7 +54,6 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
-app.use("/api/banners", bannerRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/address", addressRoutes);
 app.use("/api/wishlist", wishlistRoutes);
@@ -71,5 +69,6 @@ app.use("/api/admin/users", adminUserRoutes);
 app.use("/api/admin/sales-report",salesReportRoutes);
 app.use("/api/admin/analytics", adminAnalyticsRoutes);
 app.use("/api/pages", pageRoutes);
+app.use("/api/banners", bannerRoutes);
 
 module.exports = app;

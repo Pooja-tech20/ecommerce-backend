@@ -1,49 +1,25 @@
 const express = require("express");
-
 const router = express.Router();
-
-const upload = require("../middleware/upload");
+const upload = require("../config/multer");
 
 const {
   createBanner,
-  getBanner,
   getAllBanners,
+  getSingleBanner,
   updateBanner,
   deleteBanner,
 } = require("../controllers/bannerController");
 
-const protect = require("../middleware/protect");
-const admin = require("../middleware/adminOnly");
+const protect = require("../middleware/authMiddleware");
+const adminOnly = require("../middleware/adminOnly");
 
-// Customer
-router.get("/", getBanner);
+// Public APIs (homepage carousel)
+router.get("/", getAllBanners);
+router.get("/:id", getSingleBanner);
 
-
-// Admin
-router.get("/all", protect, admin, getAllBanners);
-
-
-router.post(
-  "/",
-  protect,
-  admin,
-  upload.single("image"),
-  createBanner
-);
-
-router.put(
-  "/:id",
-  protect,
-  admin,
-  upload.single("image"),
-  updateBanner
-);
-
-router.delete(
-  "/:id",
-  protect,
-  admin,
-  deleteBanner
-);
+// Admin only APIs
+router.post("/", protect, adminOnly, upload.single("image"), createBanner);
+router.put("/:id", protect, adminOnly, upload.single("image"), updateBanner);
+router.delete("/:id", protect, adminOnly, deleteBanner);
 
 module.exports = router;

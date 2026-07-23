@@ -1,6 +1,6 @@
 const express = require("express");
-
 const router = express.Router();
+
 const upload = require("../config/multer");
 
 const {
@@ -13,31 +13,25 @@ const {
   deleteProduct,
 } = require("../controllers/productController");
 
-router.post("/bulk", (req, res) => {
-  console.log("✅ Bulk route called");
-  res.json({
-    success: true,
-    message: "Bulk route working"
-  });
-});
-
 // Bulk Insert
 router.post("/bulk", createMultipleProducts);
 
-router.post(
-    "/",
-    upload.single("image"),
-    createProduct
-);
+// Create Product (Multiple Images)
+router.post("/", upload.array("images", 5), createProduct);
 
-router.get("/", getProducts); 
+// Get All Products
+router.get("/", getProducts);
+
+// Get Products By Category
 router.get("/category/:categoryId", getProductsByCategory);
 
+// Get Single Product
 router.get("/:id", getProductById);
 
-router.put("/:id", updateProduct);
+// Update Product
+router.put("/:id", upload.array("images", 5), updateProduct);
 
+// Delete Product
 router.delete("/:id", deleteProduct);
-
 
 module.exports = router;

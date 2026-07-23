@@ -1,29 +1,26 @@
 const Product = require("../models/Product");
 
 // Create Product
+// Create Product
 exports.createProduct = async (req, res) => {
   try {
-
     const productData = {
       ...req.body,
-      image: req.file ? req.file.path : null,
+      images: req.files ? req.files.map(file => file.path) : [],
     };
 
     const product = await Product.create(productData);
 
     res.status(201).json({
       success: true,
-      
       product,
     });
 
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };
 
@@ -90,14 +87,25 @@ exports.getProductById = async (req, res) => {
 };
 
 // Update Product
+// Update Product
 exports.updateProduct = async (req, res) => {
   try {
+
+    const updateData = {
+      ...req.body,
+    };
+
+    // If new images are uploaded
+    if (req.files && req.files.length > 0) {
+      updateData.images = req.files.map(file => file.path);
+    }
+
     const product = await Product.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       {
-         returnDocument: "after",
-    runValidators: true,
+        new: true,
+        runValidators: true,
       }
     );
 
@@ -113,6 +121,7 @@ exports.updateProduct = async (req, res) => {
       message: "Product updated successfully",
       product,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,

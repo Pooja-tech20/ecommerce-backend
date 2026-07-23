@@ -11,6 +11,7 @@ const {
   updateOrderStatus,
   cancelOrder,
   trackOrder,
+  deleteOrder,
 } = require("../controllers/orderController");
 
 // ================= User Routes =================
@@ -23,6 +24,8 @@ router.get("/my-orders", protect, getMyOrders);
 
 // Get Single Order
 router.get("/:id", protect, getOrderById);
+
+router.delete("/:id", protect, deleteOrder);
 
 // Cancel Order
 router.put("/cancel/:id", protect, cancelOrder);

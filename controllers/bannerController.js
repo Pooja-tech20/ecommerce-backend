@@ -48,23 +48,25 @@ exports.createBanner = async (req, res) => {
 // =====================================
 exports.getAllBanners = async (req, res) => {
   try {
-    const filter = req.query.all === "true" ? {} : { status: "active" };
+    const filter = req.query.all === "true"
+      ? {}
+      : { isActive: true };
 
-    const banners = await Banner.find(filter).sort({ order: 1, createdAt: -1 });
+    const banners = await Banner.find(filter).sort({
+      createdAt: -1,
+    });
 
     res.status(200).json({
       success: true,
       banners,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
-
 // =====================================
 // Get Single Banner By ID
 // =====================================

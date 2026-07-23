@@ -39,11 +39,13 @@ const productSchema = new mongoose.Schema(
       default: "1 pc",
     },
 
-    image: {
+    images: [
+    {
       type: String,
-      
-      required: true,
-    },
+      default: [],
+     // required: true,
+    }
+  ],
 
     rating: {
       type: Number,

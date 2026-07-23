@@ -15,8 +15,14 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({
-    storage: storage
+    storage
 });
-
+router.post(
+  "/",
+  protect,
+  adminOnly,
+  upload.array("images", 10), // Maximum 5 images
+  createProduct
+);
 
 module.exports = upload;

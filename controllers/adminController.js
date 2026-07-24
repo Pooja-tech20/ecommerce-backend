@@ -60,6 +60,65 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../utils/generateToken");
 
+
+// ================= Create User =================
+
+const createUser = async (req, res) => {
+  try {
+    const { fullName, phone, password, confirmPassword } = req.body;
+
+    // Validation
+    if (!fullName || !phone || !password || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Passwords do not match",
+      });
+    }
+
+    // Check existing phone
+    const existingUser = await User.findOne({ phone });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone already exists",
+      });
+    }
+
+    // Create user
+    const user = await User.create({
+      fullName,
+      phone,
+      password, // Don't hash here. Your User model hashes it automatically.
+      role: "user",
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        phone: user.phone,
+        role: user.role,
+      },
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // =======================
 // Admin Login
 // =======================
@@ -147,9 +206,9 @@ const changePassword = async (req, res) => {
       });
     }
 
-    admin.password = await bcrypt.hash(newPassword, 10);
+   admin.password = newPassword;
 
-    await admin.save();
+await admin.save();
 
     res.status(200).json({
       success: true,
@@ -165,6 +224,7 @@ const changePassword = async (req, res) => {
 };
 
 module.exports = {
+    createUser,
   adminLogin,
   changePassword,
 };

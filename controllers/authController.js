@@ -77,7 +77,20 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
 
-    const { phone, password } = req.body;
+  //  const { phone, password } = req.body;
+
+  console.log("Headers:", req.headers);
+console.log("Body:", req.body);
+
+if (!req.body) {
+  return res.status(400).json({
+    success: false,
+    message: "Request body is missing",
+  });
+}
+
+const { phone, password } = req.body;
+
 
     if (!phone || !password) {
       return res.status(400).json({

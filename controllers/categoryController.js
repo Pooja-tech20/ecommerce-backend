@@ -173,7 +173,6 @@ exports.updateCategory = async (req, res) => {
 // =====================================
 exports.deleteCategory = async (req, res) => {
   try {
-
     const category = await Category.findById(req.params.id);
 
     if (!category) {
@@ -190,15 +189,14 @@ exports.deleteCategory = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Category Deactivated Successfully",
+      category,
     });
 
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };
 

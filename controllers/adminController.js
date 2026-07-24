@@ -1,65 +1,6 @@
-// const User = require("../models/User");
-// const bcrypt = require("bcryptjs");
-// const generateToken = require("../utils/generateToken");
-
-// const adminLogin = async (req, res) => {
-//   try {
-//     const { username, password } = req.body;
-
-//     if (!username || !password) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Username and Password are required",
-//       });
-//     }
-
-//     const admin = await User.findOne({
-//       username,
-//       role: "admin",
-//     });
-
-//     if (!admin) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Admin not found",
-//       });
-//     }
-
-//     const isMatch = await bcrypt.compare(password, admin.password);
-
-//     if (!isMatch) {
-//       return res.status(401).json({
-//         success: false,
-//         message: "Invalid Password",
-//       });
-//     }
-
-//     res.status(200).json({
-//       success: true,
-//       message: "Admin Login Successful",
-//       token: generateToken(admin._id),
-//       admin: {
-//         id: admin._id,
-//         username: admin.username,
-//         fullName: admin.fullName,
-//         role: admin.role,
-//       },
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
-
-// module.exports = {
-//   adminLogin,
-// };
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../utils/generateToken");
-
 
 // ================= Create User =================
 
@@ -222,9 +163,44 @@ await admin.save();
     });
   }
 };
+// =======================
+// Get Admin Profile
+// =======================
+const getAdminProfile = async (req, res) => {
+  try {
+    const admin = await User.findById(req.user._id).select("-password");
+
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      admin: {
+        id: admin._id,
+        fullName: admin.fullName,
+        username: admin.username,
+        phone: admin.phone,
+        email: admin.email,
+        role: admin.role,
+        image: admin.image,
+        createdAt: admin.createdAt,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
-    createUser,
+  createUser,
   adminLogin,
   changePassword,
+  getAdminProfile,
 };

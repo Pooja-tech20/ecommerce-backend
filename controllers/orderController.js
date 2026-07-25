@@ -490,6 +490,7 @@ const Order = require("../models/Order");
 const OrderItem = require("../models/OrderItem");
 const Product = require("../models/Product");
 const Notification = require("../models/Notification");
+const Use = require("../models/User");
 
 // ================================
 // Generate Order Number
@@ -583,7 +584,20 @@ const createOrder = async (req, res) => {
       message: `Your order ${order.orderNumber} has been placed successfully.`,
       type: "order",
     });
-
+   // Notify all admins about the new order
+    const admins = await User.find({ role: "admin" }).select("_id");
+    if (admins.length > 0) {
+      const customerName = req.user.fullName || req.user.username || "A customer";
+      await Notification.insertMany(
+        admins.map((admin) => ({
+          user: admin._id,
+          title: "New Order Received",
+          message: `${customerName} placed order ${order.orderNumber} for ₹${totalAmount.toFixed(2)}.`,
+          type: "order",
+          order: order._id,
+        }))
+      );
+    }
     // Prepare order items & bulk operations for stock updates
     const orderItemsToInsert = [];
     const bulkStockUpdates = [];

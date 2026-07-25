@@ -9,7 +9,7 @@ const {
   getNotifications,
   markAsRead,
   deleteNotification,
-} = require("../controllers/notificationController");
+} = require("../controllers/notificationcontroller");
 
 router.post("/", protect, createNotification);
 

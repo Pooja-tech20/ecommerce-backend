@@ -93,7 +93,7 @@ exports.changePassword = async (req, res) => {
       });
     }
 
-    user.password = await bcrypt.hash(newPassword, 10);
+    user.password = newPassword;
 
     await user.save();
 

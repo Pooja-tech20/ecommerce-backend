@@ -96,6 +96,33 @@ exports.markAsRead = async (req, res) => {
 };
 
 // ========================
+// Mark All As Read
+// ========================
+
+exports.markAllAsRead = async (req, res) => {
+  try {
+
+    await Notification.updateMany(
+      { user: req.user._id, isRead: false },
+      { $set: { isRead: true } }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "All notifications marked as read",
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+
+// ========================
 // Delete Notification
 // ========================
 

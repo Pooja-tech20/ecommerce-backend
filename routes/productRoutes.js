@@ -16,8 +16,8 @@ const {
 // Bulk Insert
 router.post("/bulk", createMultipleProducts);
 
-// Create Product (Multiple Images)
-router.post("/", upload.array("images", 5), createProduct);
+// Create Product (Single Image)
+router.post("/", upload.single("image"), createProduct);
 
 // Get All Products
 router.get("/", getProducts);
@@ -28,8 +28,8 @@ router.get("/category/:categoryId", getProductsByCategory);
 // Get Single Product
 router.get("/:id", getProductById);
 
-// Update Product
-router.put("/:id", upload.array("images", 5), updateProduct);
+// Update Product (Single Image)
+router.put("/:id", upload.single("image"), updateProduct);
 
 // Delete Product
 router.delete("/:id", deleteProduct);

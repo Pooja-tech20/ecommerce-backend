@@ -13,11 +13,11 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
-   category: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "Category",
-  required: true,
-},
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
 
     price: {
       type: Number,
@@ -35,23 +35,21 @@ const productSchema = new mongoose.Schema(
     },
 
     status: {
-     type: String,
-    enum: ["In Stock", "Out of Stock"],
-    default: "In Stock",
-  },
-     unit: {
+      type: String,
+      enum: ["In Stock", "Out of Stock"],
+      default: "In Stock",
+    },
+
+    unit: {
       type: String,
       required: true,
       default: "1 pc",
     },
 
-    images: [
-    {
+    image: {
       type: String,
-      default: [],
-     // required: true,
-    }
-  ],
+      required: true,
+    },
 
     rating: {
       type: Number,

@@ -1,12 +1,191 @@
+// const Product = require("../models/Product");
+
+// // Create Product
+// // Create Product
+// exports.createProduct = async (req, res) => {
+//   try {
+//     const productData = {
+//       ...req.body,
+//       images: req.files ? req.files.map(file => file.path) : [],
+//     };
+
+//     const product = await Product.create(productData);
+
+//     res.status(201).json({
+//       success: true,
+//       product,
+//     });
+
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// //Add multiple products 
+// exports.createMultipleProducts = async (req, res) => {
+//   try {
+//     const products = req.body;
+
+//     const createdProducts = await Product.insertMany(products);
+
+//     res.status(201).json({
+//       success: true,
+//       count: createdProducts.length,
+//       products: createdProducts,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // Get All Products
+// exports.getProducts = async (req, res) => {
+//   try {
+//     const products = await Product.find().populate("category");
+
+//     res.status(200).json({
+//       success: true,
+//       count: products.length,
+//       products,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // Get Single Product
+// exports.getProductById = async (req, res) => {
+//   try {
+//     const product = await Product.findById(req.params.id).populate("category");
+
+//     if (!product) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Product not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       product,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // Update Product
+// // Update Product
+// exports.updateProduct = async (req, res) => {
+//   try {
+
+//     const updateData = {
+//       ...req.body,
+//     };
+
+//     // If new images are uploaded
+//     if (req.files && req.files.length > 0) {
+//       updateData.images = req.files.map(file => file.path);
+//     }
+
+//     const product = await Product.findByIdAndUpdate(
+//       req.params.id,
+//       updateData,
+//       {
+//         new: true,
+//         runValidators: true,
+//       }
+//     );
+
+//     if (!product) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Product not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Product updated successfully",
+//       product,
+//     });
+
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // Delete Product
+// exports.deleteProduct = async (req, res) => {
+//   try {
+//     const product = await Product.findByIdAndDelete(req.params.id);
+
+//     if (!product) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Product not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Product deleted successfully",
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+// // Get Products By Category
+// exports.getProductsByCategory = async (req, res) => {
+//   try {
+
+//     const products = await Product.find({
+//       category: req.params.categoryId,
+//     }).populate("category");
+
+//     res.status(200).json({
+//       success: true,
+//       count: products.length,
+//       products,
+//     });
+
+//   } catch (error) {
+
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+
+//   }
+// };
 const Product = require("../models/Product");
 
+// ==========================
 // Create Product
-// Create Product
+// ==========================
 exports.createProduct = async (req, res) => {
   try {
     const productData = {
       ...req.body,
-      images: req.files ? req.files.map(file => file.path) : [],
+      image: req.file ? req.file.path : "",
     };
 
     const product = await Product.create(productData);
@@ -15,7 +194,6 @@ exports.createProduct = async (req, res) => {
       success: true,
       product,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -24,7 +202,9 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-//Add multiple products 
+// ==========================
+// Add Multiple Products
+// ==========================
 exports.createMultipleProducts = async (req, res) => {
   try {
     const products = req.body;
@@ -44,7 +224,9 @@ exports.createMultipleProducts = async (req, res) => {
   }
 };
 
+// ==========================
 // Get All Products
+// ==========================
 exports.getProducts = async (req, res) => {
   try {
     const products = await Product.find().populate("category");
@@ -62,7 +244,9 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-// Get Single Product
+// ==========================
+// Get Product By ID
+// ==========================
 exports.getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate("category");
@@ -86,18 +270,18 @@ exports.getProductById = async (req, res) => {
   }
 };
 
+// ==========================
 // Update Product
-// Update Product
+// ==========================
 exports.updateProduct = async (req, res) => {
   try {
-
     const updateData = {
       ...req.body,
     };
 
-    // If new images are uploaded
-    if (req.files && req.files.length > 0) {
-      updateData.images = req.files.map(file => file.path);
+    // Update image only if a new one is uploaded
+    if (req.file) {
+      updateData.image = req.file.path;
     }
 
     const product = await Product.findByIdAndUpdate(
@@ -121,7 +305,6 @@ exports.updateProduct = async (req, res) => {
       message: "Product updated successfully",
       product,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -130,7 +313,9 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
+// ==========================
 // Delete Product
+// ==========================
 exports.deleteProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
@@ -153,10 +338,12 @@ exports.deleteProduct = async (req, res) => {
     });
   }
 };
+
+// ==========================
 // Get Products By Category
+// ==========================
 exports.getProductsByCategory = async (req, res) => {
   try {
-
     const products = await Product.find({
       category: req.params.categoryId,
     }).populate("category");
@@ -166,13 +353,10 @@ exports.getProductsByCategory = async (req, res) => {
       count: products.length,
       products,
     });
-
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };

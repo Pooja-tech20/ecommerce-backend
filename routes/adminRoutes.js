@@ -6,7 +6,8 @@
 //   adminLogin,
 //   changePassword,
 //   getAdminProfile,
-// } = require("../controllers/adminController");
+// } = require("../controllers/adminController")
+// ;
 
 // router.post("/login", adminLogin);
 // router.post("/users", createUser);
@@ -17,12 +18,14 @@
 
 const express = require("express");
 const router = express.Router();
+const upload = require("../config/multer");
 
 const {
   createUser,
   adminLogin,
   changePassword,
   getAdminProfile,
+  updateAdminProfile,
 } = require("../controllers/adminController");
 
 const auth = require("../middleware/protect"); // JWT middleware
@@ -31,6 +34,13 @@ router.post("/login", adminLogin);
 router.post("/users", createUser);
 
 router.get("/profile", auth, getAdminProfile);
+// Update Admin Profile
+router.put(
+  "/profile",
+  auth,
+  upload.single("image"),
+  updateAdminProfile
+);
 router.put("/change-password", auth, changePassword);
 
 module.exports = router;

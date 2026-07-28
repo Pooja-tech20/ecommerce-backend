@@ -2152,9 +2152,9 @@ const createOrder = async (req, res) => {
 
     // Guard against string values from the request body producing
     // string concatenation instead of arithmetic below
-    const discountNum = Number(discount) || 0;
-    const deliveryFeeNum = Number(deliveryFee) || 0;
-    const taxNum = Number(tax) || 0;
+   // const discountNum = Number(discount) || 0;
+   // const deliveryFeeNum = Number(deliveryFee) || 0;
+   // const taxNum = Number(tax) || 0;
 
     // Batch fetch all requested products to avoid N+1 database hits
     const productIds = items.map((item) => item.product);

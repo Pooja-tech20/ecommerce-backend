@@ -198,9 +198,57 @@ const getAdminProfile = async (req, res) => {
   }
 };
 
+// =======================
+// Update Admin Profile
+// =======================
+const updateAdminProfile = async (req, res) => {
+  try {
+    const admin = await User.findById(req.user._id);
+
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin not found",
+      });
+    }
+
+    admin.fullName = req.body.fullName || admin.fullName;
+    admin.username = req.body.username || admin.username;
+    admin.phone = req.body.phone || admin.phone;
+    admin.email = req.body.email || admin.email;
+
+    // Update profile image
+    if (req.file) {
+      admin.image = req.file.path;
+    }
+
+    await admin.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      admin: {
+        id: admin._id,
+        fullName: admin.fullName,
+        username: admin.username,
+        phone: admin.phone,
+        email: admin.email,
+        role: admin.role,
+        image: admin.image,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   adminLogin,
   changePassword,
   getAdminProfile,
+  updateAdminProfile,
 };

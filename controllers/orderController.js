@@ -1496,6 +1496,7 @@
 //     }
 
 //     order.orderStatus = "cancelled";
+
 //     order.tracking.status = "Cancelled";
 //     order.tracking.currentLocation = "Cancelled";
 

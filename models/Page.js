@@ -23,13 +23,17 @@ const pageSchema = new mongoose.Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
-
+     order: {
+    type: Number,
+    default: 0
+      },
     // Admin who created the page
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      
     },
+    
 
     // Admin who last updated the page
     updatedBy: {
@@ -37,6 +41,7 @@ const pageSchema = new mongoose.Schema(
       ref: "User",
       default: null,
     },
+   
   },
   {
     timestamps: true,

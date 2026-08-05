@@ -59,7 +59,7 @@ router.get(
 // GET /api/admin/users/:id
 router.get(
   "/:id",
-  protect,
+  protect, 
   adminOnly,
   getUserById
 );

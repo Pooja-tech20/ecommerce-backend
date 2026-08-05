@@ -26,6 +26,32 @@ const reviewSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+
+    // User or Admin
+    reviewerType: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
+
+    // True if customer purchased this product
+    verifiedPurchase: {
+      type: Boolean,
+      default: false,
+    },
+
+    // Admin can approve reviews (optional)
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "approved",
+    },
+
+    // Helpful count
+    helpfulCount: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

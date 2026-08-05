@@ -20,6 +20,13 @@ const categorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    deliveryDays: {
+    type: Number,
+    required: true,
+    default: 2,
+    min: 1
+},
+
      isActive: {
       type: Boolean,
       default: true,

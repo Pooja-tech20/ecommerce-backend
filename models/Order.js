@@ -88,6 +88,24 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "paid", "failed", "refunded"],
       default: "pending",
     },
+   // ================================
+// Invoice
+// ================================
+invoiceGenerated: {
+  type: Boolean,
+  default: false,
+},
+
+invoiceNumber: {
+  type: String,
+  sparse: true,
+  default: null,
+},
+
+invoiceGeneratedAt: {
+  type: Date,
+  default: null,
+},
 
     // Order Status
     orderStatus: {

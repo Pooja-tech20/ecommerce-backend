@@ -1,4 +1,3 @@
-
 const express = require("express");
 const router = express.Router();
 
@@ -8,20 +7,24 @@ const {
   getSinglePage,
   updatePage,
   deletePage,
+  updatePageOrder,
 } = require("../controllers/pageController");
 
-const protect = require("../middleware/authMiddleware"); // <-- import your middleware
-const adminOnly =require("../middleware/adminOnly");
-// Public APIs (everyone can view)
+const protect = require("../middleware/authMiddleware");
+const adminOnly = require("../middleware/adminOnly");
+
+// Public APIs
 router.get("/", getAllPages);
 router.get("/:slug", getSinglePage);
 
-// Admin only APIs
-router.post("/", (req, res, next) => {
-  console.log("POST /api/pages HIT");
-  next();
-}, protect, adminOnly, createPage);
+// Admin APIs
+router.post("/", protect, adminOnly, createPage);
+
+// ✅ Put this BEFORE "/:id"
+router.put("/order", protect, adminOnly, updatePageOrder);
+
 router.put("/:id", protect, adminOnly, updatePage);
+
 router.delete("/:id", protect, adminOnly, deletePage);
 
 module.exports = router;

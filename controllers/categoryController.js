@@ -1,3 +1,238 @@
+// const Category = require("../models/Category");
+
+// // =====================================
+// // Create Category
+// // =====================================
+// exports.createCategory = async (req, res) => {
+//   try {
+//     console.log("BODY:", req.body);
+//     console.log("FILE:", req.file);
+
+//     const { name, description } = req.body;
+
+//     if (!name) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Category name is required",
+//       });
+//     }
+
+//     const categoryExists = await Category.findOne({
+//       name: name.trim(),
+//     });
+
+//     if (categoryExists) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Category already exists",
+//       });
+//     }
+
+//     const category = await Category.create({
+//       name: name.trim(),
+//       description,
+//       image: req.file ? req.file.path : "",
+//        isActive: true,
+//     });
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Category created successfully",
+//       category,
+//     });
+
+//   } catch (error) {
+
+//     console.log(error);
+
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+
+//   }
+// };
+
+// // =====================================
+// // Get All Categories
+// // =====================================
+// exports.getCategories = async (req, res) => {
+
+//   try {
+// const keyword = req.query.keyword || "";
+
+// const filter = {};
+
+// if (keyword) {
+//   filter.name = {
+//     $regex: keyword,
+//     $options: "i",
+//   };
+// }
+
+// const categories = await Category.find(filter)
+//   .sort({ createdAt: -1 });
+
+// res.status(200).json({
+//   success: true,
+//   count: categories.length,
+//   categories,
+// });
+//   } catch (error) {
+
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+
+//   }
+
+// };
+
+// // =====================================
+// // Get Category By ID
+// // =====================================
+// exports.getCategoryById = async (req, res) => {
+
+//   try {
+
+//     const category = await Category.findById(req.params.id);
+
+//     if (!category) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Category not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       category,
+//     });
+
+//   } catch (error) {
+
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+
+//   }
+
+// };
+
+// // =====================================
+// // Update Category
+// // =====================================
+// exports.updateCategory = async (req, res) => {
+
+//   try {
+
+//     const category = await Category.findById(req.params.id);
+
+//     if (!category) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Category not found",
+//       });
+//     }
+
+//     if (req.body.name) {
+//       category.name = req.body.name;
+//     }
+
+//     if (req.body.description) {
+//       category.description = req.body.description;
+//     }
+
+//     if (req.file) {
+//       category.image = req.file.path;
+//     }
+
+//     await category.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Category updated successfully",
+//       category,
+//     });
+
+//   } catch (error) {
+
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+
+//   }
+
+// };
+
+// // =====================================
+// // Delete Category
+// // =====================================
+// exports.deleteCategory = async (req, res) => {
+//   try {
+//     const category = await Category.findById(req.params.id);
+
+//     if (!category) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Category not found",
+//       });
+//     }
+
+//     category.isActive = false;
+
+//     await category.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Category Deactivated Successfully",
+//       category,
+//     });
+
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // =====================================
+// // Activate / Deactivate Category
+// // =====================================
+// exports.toggleCategoryStatus = async (req, res) => {
+//   try {
+//     const category = await Category.findById(req.params.id);
+
+//     if (!category) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Category not found",
+//       });
+//     }
+
+//     category.isActive = !category.isActive;
+
+//     await category.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: category.isActive
+//         ? "Category Activated Successfully"
+//         : "Category Deactivated Successfully",
+//       category,
+//     });
+
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
 const Category = require("../models/Category");
 
 // =====================================
@@ -8,7 +243,7 @@ exports.createCategory = async (req, res) => {
     console.log("BODY:", req.body);
     console.log("FILE:", req.file);
 
-    const { name, description } = req.body;
+    const { name, description, deliveryDays } = req.body; // Added deliveryDays
 
     if (!name) {
       return res.status(400).json({
@@ -32,7 +267,8 @@ exports.createCategory = async (req, res) => {
       name: name.trim(),
       description,
       image: req.file ? req.file.path : "",
-       isActive: true,
+      deliveryDays: Number(deliveryDays) || 2, // Added deliveryDays with default
+      isActive: true,
     });
 
     res.status(201).json({
@@ -59,25 +295,25 @@ exports.createCategory = async (req, res) => {
 exports.getCategories = async (req, res) => {
 
   try {
-const keyword = req.query.keyword || "";
+    const keyword = req.query.keyword || "";
 
-const filter = {};
+    const filter = {};
 
-if (keyword) {
-  filter.name = {
-    $regex: keyword,
-    $options: "i",
-  };
-}
+    if (keyword) {
+      filter.name = {
+        $regex: keyword,
+        $options: "i",
+      };
+    }
 
-const categories = await Category.find(filter)
-  .sort({ createdAt: -1 });
+    const categories = await Category.find(filter)
+      .sort({ createdAt: -1 });
 
-res.status(200).json({
-  success: true,
-  count: categories.length,
-  categories,
-});
+    res.status(200).json({
+      success: true,
+      count: categories.length,
+      categories,
+    });
   } catch (error) {
 
     res.status(500).json({
@@ -138,11 +374,15 @@ exports.updateCategory = async (req, res) => {
     }
 
     if (req.body.name) {
-      category.name = req.body.name;
+      category.name = req.body.name.trim(); // Added trim()
     }
 
     if (req.body.description) {
       category.description = req.body.description;
+    }
+
+    if (req.body.deliveryDays) { // Added deliveryDays update
+      category.deliveryDays = Number(req.body.deliveryDays);
     }
 
     if (req.file) {

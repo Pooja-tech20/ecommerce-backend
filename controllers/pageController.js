@@ -4,14 +4,8 @@ const Page = require("../models/Page");
 // Create Page
 // ==========================
 exports.createPage = async (req, res) => {
-  
   try {
-
-    console.log("Body:", req.body);
     const { title, slug, content, status } = req.body;
-
-    console.log(title);
-    console.log(slug);
 
     const page = await Page.create({
       title,
@@ -20,7 +14,7 @@ exports.createPage = async (req, res) => {
       status,
       createdBy: req.user._id,
     });
-     console.log(page);
+
     res.status(201).json({
       success: true,
       message: "Page created successfully",
@@ -40,9 +34,9 @@ exports.createPage = async (req, res) => {
 exports.getAllPages = async (req, res) => {
   try {
     const pages = await Page.find()
-    .populate("createdBy", "fullName email")
-    .populate("updatedBy", "fullName email")
-    .sort({ createdAt: -1 });
+      .populate("createdBy", "fullName email")
+      .populate("updatedBy", "fullName email")
+      .sort({ order: 1 }); // Sort by drag order
 
     res.status(200).json({
       success: true,
@@ -65,8 +59,8 @@ exports.getSinglePage = async (req, res) => {
     const page = await Page.findOne({
       slug: req.params.slug,
     })
-    .populate("createdBy", "fullName email")
-    .populate("updatedBy", "fullName email");
+      .populate("createdBy", "fullName email")
+      .populate("updatedBy", "fullName email");
 
     if (!page) {
       return res.status(404).json({
@@ -107,8 +101,6 @@ exports.updatePage = async (req, res) => {
     page.slug = slug;
     page.content = content;
     page.status = status;
-
-    // Admin who updated the page
     page.updatedBy = req.user._id;
 
     await page.save();
@@ -145,6 +137,40 @@ exports.deletePage = async (req, res) => {
       message: "Page deleted successfully",
     });
   } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// ==========================
+// Update Page Order (Drag & Drop)
+// ==========================
+exports.updatePageOrder = async (req, res) => {
+  try {
+    const { pages } = req.body;
+
+    if (!pages || !Array.isArray(pages)) {
+      return res.status(400).json({
+        success: false,
+        message: "Pages array is required",
+      });
+    }
+
+    for (let i = 0; i < pages.length; i++) {
+      await Page.findByIdAndUpdate(pages[i]._id, {
+        order: i,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Page order updated successfully",
+    });
+  } catch (error) {
+    console.error("Update Order Error:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,

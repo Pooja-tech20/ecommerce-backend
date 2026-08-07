@@ -199,6 +199,7 @@
 
 
 const User = require("../models/User");
+const Order = require("../models/Order");
 const bcrypt = require("bcryptjs");
 
 // ============================
@@ -290,7 +291,7 @@ exports.getAllUsers = async (req, res) => {
 };
 
 // ============================
-// Get User By Id
+// Get User By Id + Order History
 // ============================
 
 exports.getUserById = async (req, res) => {
@@ -304,10 +305,42 @@ exports.getUserById = async (req, res) => {
       });
     }
 
-    res.json({
+    // Get all orders of this user
+    const orders = await Order.find({
+      user: req.params.id,
+    }).sort({ createdAt: -1 });
+
+    // Calculate statistics
+    const totalOrders = orders.length;
+
+    const totalSpent = orders.reduce(
+      (sum, order) => sum + order.totalAmount,
+      0
+    );
+
+    const deliveredOrders = orders.filter(
+      (o) => o.orderStatus === "delivered"
+    ).length;
+
+    const cancelledOrders = orders.filter(
+      (o) => o.orderStatus === "cancelled"
+    ).length;
+
+    res.status(200).json({
       success: true,
+
       user,
+
+      statistics: {
+        totalOrders,
+        deliveredOrders,
+        cancelledOrders,
+        totalSpent,
+      },
+
+      orders,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,

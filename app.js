@@ -139,6 +139,7 @@ const bannerRoutes = require("./routes/bannerRoutes");
 const settingsRoutes = require("./routes/settingsRoutes");
 const invoiceRoutes = require("./routes/invoiceRoutes");
 const otpRoutes = require("./routes/otpRoutes");
+const sellerRoutes = require("./routes/sellerRoutes");
 
 // Middleware
 const maintenanceMode = require("./middleware/maintenanceMode");
@@ -167,22 +168,20 @@ app.use(limiter);
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "http://127.0.0.1:5173",
-      "http://127.0.0.1:5174",
-      "http://192.168.1.24:5173",
-      "http://192.168.1.24:5174",
-      "http://192.168.1.28:5173",
-      "http://192.168.1.28:5174",
-    ],
+     origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://192.168.1.24:5173",
+    
+  ],
+  
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
+// app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -224,5 +223,6 @@ app.use("/api/banners", bannerRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/invoice", invoiceRoutes);
 app.use("/api/otp", otpRoutes);
+app.use("/api/seller", sellerRoutes);
 
 module.exports = app;

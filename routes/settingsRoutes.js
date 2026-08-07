@@ -1,23 +1,25 @@
 const express = require("express");
-
 const router = express.Router();
 
+// Middleware
 const protect = require("../middleware/protect");
 const adminOnly = require("../middleware/adminOnly");
 
+// Controllers
 const {
   getSettings,
   updateSettings,
   runBackupNow,
+  getPublicSettings,   // <-- added from your commented code
 } = require("../controllers/settingsController");
 
-// GET /api/admin/settings
+// ─── Public routes (no auth) ───────────────────────────────────────────
+// Must come before the "/" route so it isn't shadowed.
+router.get("/public", getPublicSettings);
+
+// ─── Admin routes ──────────────────────────────────────────────────────
 router.get("/", protect, adminOnly, getSettings);
-
-// PUT /api/admin/settings
 router.put("/", protect, adminOnly, updateSettings);
-
-// POST /api/admin/settings/backup/run
 router.post("/backup/run", protect, adminOnly, runBackupNow);
 
 module.exports = router;

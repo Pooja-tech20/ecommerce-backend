@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-// Single-document collection: the whole app only ever has ONE settings
-// document. We enforce that with a fixed key below.
 const settingsSchema = new mongoose.Schema(
   {
     key: {
@@ -14,7 +12,10 @@ const settingsSchema = new mongoose.Schema(
       storeName: { type: String, default: "RudraGroceries" },
       storeEmail: { type: String, default: "info@rudragroceries.com" },
       storePhone: { type: String, default: "+91 98765 43210" },
-      storeAddress: { type: String, default: "123, Main Street, Mumbai, India" },
+      storeAddress: {
+        type: String,
+        default: "123, Main Street, Mumbai, India",
+      },
       timezone: { type: String, default: "Asia/Kolkata" },
       currency: { type: String, default: "INR" },
       language: { type: String, default: "en" },
@@ -67,8 +68,8 @@ const settingsSchema = new mongoose.Schema(
       autoBackup: { type: Boolean, default: true },
       backupFrequency: { type: String, default: "daily" },
       retentionDays: { type: Number, default: 30 },
-      lastBackup: { type: String, default: null },
-      backupSize: { type: String, default: null },
+      lastBackup: { type: String, default: "" },
+      backupSize: { type: String, default: "" },
     },
   },
   {

@@ -148,6 +148,10 @@ app.use("/api/admin/sales-report",salesReportRoutes);
 app.use("/api/admin/analytics", adminAnalyticsRoutes);
 app.use("/api/pages", pageRoutes);
 app.use("/api/banners", bannerRoutes);
-app.use("/api/admin/settings", settingsRoutes);
+
+//app.use("/api/admin/settings", settingsRoutes);
+
+app.use("/api/settings", settingsRoutes);
+
 
 module.exports = app;

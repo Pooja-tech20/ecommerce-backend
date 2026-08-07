@@ -6,6 +6,7 @@ const protect = require("../middleware/protect");
 const adminOnly = require("../middleware/adminOnly");
 
 const {
+  createUser,
   getAllUsers,
   getUserById,
   updateUser,
@@ -20,6 +21,14 @@ const { getUserDetails } = require("../controllers/adminUserDetailsController");
 // ================================
 // Admin User Management Routes
 // ================================
+// Create User
+// POST /api/admin/users
+router.post(
+  "/",
+  protect,
+  adminOnly,
+  createUser
+);
 
 router.put("/:id/change-password", protect, adminOnly, changeUserPassword);
 
@@ -68,12 +77,7 @@ router.put(
 
 // Delete user
 // DELETE /api/admin/users/:id
-router.delete(
-  "/:id",
-  protect,
-  adminOnly,
-  deleteUser
-);
+router.delete("/:id", protect, adminOnly, deleteUser);
 
 
 // Activate / Deactivate user

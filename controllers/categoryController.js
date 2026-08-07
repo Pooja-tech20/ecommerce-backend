@@ -59,37 +59,25 @@ exports.createCategory = async (req, res) => {
 exports.getCategories = async (req, res) => {
 
   try {
+const keyword = req.query.keyword || "";
 
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
-    const keyword = req.query.keyword || "";
+const filter = {};
 
-    const filter = {
-      isActive: true,
-    };
+if (keyword) {
+  filter.name = {
+    $regex: keyword,
+    $options: "i",
+  };
+}
 
-    if (keyword) {
-      filter.name = {
-        $regex: keyword,
-        $options: "i",
-      };
-    }
+const categories = await Category.find(filter)
+  .sort({ createdAt: -1 });
 
-    const total = await Category.countDocuments(filter);
-
-    const categories = await Category.find(filter)
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .sort({ createdAt: -1 });
-
-    res.status(200).json({
-      success: true,
-      total,
-      page,
-      pages: Math.ceil(total / limit),
-      categories,
-    });
-
+res.status(200).json({
+  success: true,
+  count: categories.length,
+  categories,
+});
   } catch (error) {
 
     res.status(500).json({
@@ -185,7 +173,6 @@ exports.updateCategory = async (req, res) => {
 // =====================================
 exports.deleteCategory = async (req, res) => {
   try {
-
     const category = await Category.findById(req.params.id);
 
     if (!category) {
@@ -202,15 +189,14 @@ exports.deleteCategory = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Category Deactivated Successfully",
+      category,
     });
 
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };
 

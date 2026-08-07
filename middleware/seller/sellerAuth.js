@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Seller = require("../models/Seller");
-
+const Seller = require("../../models/seller/Seller");
 exports.sellerAuth = async (req, res, next) => {
   try {
     let token;

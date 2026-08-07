@@ -139,7 +139,8 @@ const bannerRoutes = require("./routes/bannerRoutes");
 const settingsRoutes = require("./routes/settingsRoutes");
 const invoiceRoutes = require("./routes/invoiceRoutes");
 const otpRoutes = require("./routes/otpRoutes");
-const sellerRoutes = require("./routes/sellerRoutes");
+const sellerRoutes = require("./routes/seller/sellerRoutes");
+const adminSellerRoutes = require("./routes/seller/adminSellerRoutes");
 
 // Middleware
 const maintenanceMode = require("./middleware/maintenanceMode");
@@ -224,5 +225,6 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/invoice", invoiceRoutes);
 app.use("/api/otp", otpRoutes);
 app.use("/api/seller", sellerRoutes);
+app.use("/api/admin", adminSellerRoutes);
 
 module.exports = app;

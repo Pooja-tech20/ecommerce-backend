@@ -1,4 +1,4 @@
-const Seller = require("../models/Seller");
+const Seller = require("../../models/seller/Seller");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -187,7 +187,6 @@ exports.updateSellerProfile = async (req, res) => {
     });
   }
 };
-
 
 exports.changePassword = async (req, res) => {
   try {

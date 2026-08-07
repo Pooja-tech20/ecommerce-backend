@@ -8,9 +8,9 @@ const {
   getSellerProfile,
   updateSellerProfile,
   changePassword,
-} = require("../controllers/sellerController");
+} = require("../../controllers/seller/sellerController");
 
-const { sellerAuth } = require("../middleware/sellerAuth");
+const { sellerAuth } = require("../../middleware/seller/sellerAuth");
 
 router.post("/register", registerSeller);
 

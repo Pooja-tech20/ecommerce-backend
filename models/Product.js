@@ -51,6 +51,12 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
+    seller: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Seller",
+    required: true,
+},
+
     // Average Rating
     rating: {
       type: Number,

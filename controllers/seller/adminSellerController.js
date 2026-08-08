@@ -1,4 +1,4 @@
-const Seller = require("../models/Seller");
+const Seller = require("../../models/seller/Seller");
 
 exports.getPendingSellers = async (req, res) => {
   try {

@@ -12,17 +12,25 @@ const earningSchema = new mongoose.Schema(
       ref: "Order",
       required: true,
     },
-    amount: {
+    orderItemId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "OrderItem",
+      default: null,
+    },
+    grossAmount: {
       type: Number,
       required: true,
+      default: 0,
     },
     commission: {
       type: Number,
       required: true,
+      default: 0,
     },
     netAmount: {
       type: Number,
       required: true,
+      default: 0,
     },
     status: {
       type: String,
@@ -45,13 +53,16 @@ const earningSchema = new mongoose.Schema(
     },
     availableAt: {
       type: Date,
-      default: () => new Date(+new Date() + 7 * 24 * 60 * 60 * 1000), // 7 days settlement
+      default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     },
   },
   { timestamps: true }
 );
 
-// Withdrawal Schema
+// Indexes
+earningSchema.index({ sellerId: 1, status: 1 });
+earningSchema.index({ sellerId: 1, createdAt: -1 });
+
 const withdrawalSchema = new mongoose.Schema(
   {
     sellerId: {
@@ -62,14 +73,18 @@ const withdrawalSchema = new mongoose.Schema(
     amount: {
       type: Number,
       required: true,
+      min: 1,
     },
     bankDetails: {
-      accountNumber: String,
-      ifscCode: String,
-      accountHolder: String,
-      bankName: String,
+      accountNumber: { type: String, default: "" },
+      ifscCode: { type: String, default: "" },
+      accountHolder: { type: String, default: "" },
+      bankName: { type: String, default: "" },
     },
-    upiId: String,
+    upiId: {
+      type: String,
+      default: "",
+    },
     status: {
       type: String,
       enum: ["Pending", "Processing", "Completed", "Failed"],
@@ -83,10 +98,21 @@ const withdrawalSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    processedAt: Date,
+    processedAt: {
+      type: Date,
+      default: null,
+    },
+    completedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
+
+// Indexes
+withdrawalSchema.index({ sellerId: 1, status: 1 });
+withdrawalSchema.index({ sellerId: 1, createdAt: -1 });
 
 module.exports = {
   Earning: mongoose.model("Earning", earningSchema),

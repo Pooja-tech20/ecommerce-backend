@@ -1,3 +1,4 @@
+
 const mongoose = require("mongoose");
 
 const sellerSchema = new mongoose.Schema(
@@ -79,4 +80,4 @@ const sellerSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Seller", sellerSchema);
+module.exports = mongoose.model("SellerSeller", sellerSchema);

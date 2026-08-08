@@ -1,22 +1,84 @@
+// // const express = require("express");
+// // const router = express.Router();
+
+// // const sellerAuth = require("../../middleware/seller/sellerAuth");
+// // const inventoryController = require("../../controllers/seller/sellerInventoryController");
+
+// // // ==================== PHASE 6: INVENTORY MANAGEMENT ====================
+
+// // // 📦 Product CRUD
+// // router.post("/", sellerAuth, inventoryController.addProduct);
+// // router.get("/", sellerAuth, inventoryController.getProducts);
+// // router.get("/stats", sellerAuth, inventoryController.getProductStats);
+// // router.get("/:id", sellerAuth, inventoryController.getProduct);
+// // router.put("/:id", sellerAuth, inventoryController.updateProduct);
+// // router.delete("/:id", sellerAuth, inventoryController.deleteProduct);
+
+// // // 📊 Stock Management
+// // router.patch("/:id/stock", sellerAuth, inventoryController.updateStock);
+
+// // // 📤 Bulk Operations
+// // router.post("/bulk", sellerAuth, inventoryController.bulkUpload);
+
+// // module.exports = router;
+
+// const express = require("express");
+// const router = express.Router();
+
+// const sellerAuth = require("../../middleware/seller/sellerAuth");
+// const inventoryController = require("../../controllers/seller/sellerInventoryController");
+
+// // Product CRUD
+// router.post("/", sellerAuth, inventoryController.addProduct);
+// router.get("/", sellerAuth, inventoryController.getProducts);
+// router.get("/stats", sellerAuth, inventoryController.getProductStats);
+// router.get("/:id", sellerAuth, inventoryController.getProduct);
+// router.put("/:id", sellerAuth, inventoryController.updateProduct);
+// router.delete("/:id", sellerAuth, inventoryController.deleteProduct);
+
+// // Stock
+// router.patch("/:id/stock", sellerAuth, inventoryController.updateStock);
+
+// // Bulk Upload
+// router.post("/bulk", sellerAuth, inventoryController.bulkUpload);
+
+// module.exports = router;
+
 const express = require("express");
 const router = express.Router();
-const authSeller = require("../../middleware/authSeller");
-const inventoryController = require("../../controllers/seller/inventoryController");
 
-// ==================== PHASE 6: INVENTORY MANAGEMENT ====================
+const { sellerAuth } = require("../../middleware/seller/sellerAuth");
+const inventoryController = require("../../controllers/seller/sellerInventoryController");
 
-// 📦 Product CRUD
-router.post("/", authSeller, inventoryController.addProduct);
-router.get("/", authSeller, inventoryController.getProducts);
-router.get("/stats", authSeller, inventoryController.getProductStats);
-router.get("/:id", authSeller, inventoryController.getProduct);
-router.put("/:id", authSeller, inventoryController.updateProduct);
-router.delete("/:id", authSeller, inventoryController.deleteProduct);
+// ===== DEBUG =====
+console.log("sellerAuth:", sellerAuth);
 
-// 📊 Stock Management
-router.patch("/:id/stock", authSeller, inventoryController.updateStock);
+console.log("Inventory Controller:", inventoryController);
 
-// 📤 Bulk Operations
-router.post("/bulk", authSeller, inventoryController.bulkUpload);
+console.log({
+  addProduct: inventoryController.addProduct,
+  getProducts: inventoryController.getProducts,
+  getProductStats: inventoryController.getProductStats,
+  getProduct: inventoryController.getProduct,
+  updateProduct: inventoryController.updateProduct,
+  deleteProduct: inventoryController.deleteProduct,
+  updateStock: inventoryController.updateStock,
+  bulkUpload: inventoryController.bulkUpload,
+});
+// =================
+
+// Product CRUD
+router.post("/", sellerAuth, inventoryController.addProduct);
+router.get("/", sellerAuth, inventoryController.getProducts);
+router.get("/stats", sellerAuth, inventoryController.getProductStats);
+router.get("/:id", sellerAuth, inventoryController.getProduct);
+router.put("/:id", sellerAuth, inventoryController.updateProduct);
+router.delete("/:id", sellerAuth, inventoryController.deleteProduct);
+
+// Stock
+router.patch("/:id/stock", sellerAuth, inventoryController.updateStock);
+
+// Bulk Upload
+router.post("/bulk", sellerAuth, inventoryController.bulkUpload);
 
 module.exports = router;

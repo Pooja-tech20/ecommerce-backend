@@ -1,28 +1,58 @@
+// const express = require("express");
+// const router = express.Router();
+
+// const sellerAuth = require("../../middleware/seller/sellerAuth");
+// const profileController = require("../../controllers/seller/sellerProfileController");
+
+// // ==================== PHASE 10: PROFILE & SETTINGS ====================
+
+// // 👤 Profile Management
+// router.get("/", sellerAuth, profileController.getProfile);
+// router.put("/", sellerAuth, profileController.updateProfile);
+// router.post("/change-password", sellerAuth, profileController.changePassword);
+// router.delete("/", sellerAuth, profileController.deleteAccount);
+
+// // 🏪 Shop Settings
+// router.put("/shop", sellerAuth, profileController.updateShopSettings);
+// router.post("/logo", sellerAuth, profileController.uploadLogo);
+
+// // 💳 Payment Settings
+// router.put("/payment", sellerAuth, profileController.updatePaymentSettings);
+
+// // 🔔 Notification Settings
+// router.put("/notifications", sellerAuth, profileController.updateNotificationSettings);
+
+// // 📊 Dashboard & Analytics
+// router.get("/dashboard", sellerAuth, profileController.getDashboardStats);
+// router.get("/analytics", sellerAuth, profileController.getAnalytics);
+
+// module.exports = router;
 const express = require("express");
 const router = express.Router();
-const authSeller = require("../../middleware/authSeller");
-const profileController = require("../../controllers/seller/profileController");
 
-// ==================== PHASE 10: PROFILE & SETTINGS ====================
+// ✅ FIX: Import sellerAuth correctly
+const { sellerAuth } = require("../../middleware/seller/sellerAuth");
 
-// 👤 Profile Management
-router.get("/", authSeller, profileController.getProfile);
-router.put("/", authSeller, profileController.updateProfile);
-router.post("/change-password", authSeller, profileController.changePassword);
-router.delete("/", authSeller, profileController.deleteAccount);
+const profileController = require("../../controllers/seller/sellerProfileController");
 
-// 🏪 Shop Settings
-router.put("/shop", authSeller, profileController.updateShopSettings);
-router.post("/logo", authSeller, profileController.uploadLogo);
+// ==================== PROFILE MANAGEMENT ====================
+router.get("/", sellerAuth, profileController.getProfile);
+router.put("/", sellerAuth, profileController.updateProfile);
+router.post("/change-password", sellerAuth, profileController.changePassword);
+router.delete("/", sellerAuth, profileController.deleteAccount);
 
-// 💳 Payment Settings
-router.put("/payment", authSeller, profileController.updatePaymentSettings);
+// ==================== SHOP SETTINGS ====================
+router.put("/shop", sellerAuth, profileController.updateShopSettings);
+router.post("/logo", sellerAuth, profileController.uploadLogo);
 
-// 🔔 Notification Settings
-router.put("/notifications", authSeller, profileController.updateNotificationSettings);
+// ==================== PAYMENT SETTINGS ====================
+router.put("/payment", sellerAuth, profileController.updatePaymentSettings);
 
-// 📊 Dashboard & Analytics
-router.get("/dashboard", authSeller, profileController.getDashboardStats);
-router.get("/analytics", authSeller, profileController.getAnalytics);
+// ==================== NOTIFICATION SETTINGS ====================
+router.put("/notifications", sellerAuth, profileController.updateNotificationSettings);
+
+// ==================== DASHBOARD & ANALYTICS ====================
+router.get("/dashboard", sellerAuth, profileController.getDashboardStats);
+router.get("/analytics", sellerAuth, profileController.getAnalytics);
 
 module.exports = router;

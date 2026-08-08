@@ -6,7 +6,7 @@ const {
   getPendingSellers,
   approveSeller,
   rejectSeller,
-} = require("../controllers/adminSellerController");
+} = require("../../controllers/seller/adminSellerController");
 
 // Add your existing admin authentication middleware here
 // Example:

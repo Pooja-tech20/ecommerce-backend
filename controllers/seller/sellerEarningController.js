@@ -1,12 +1,49 @@
-const { Earning, Withdrawal } = require("../../models/Earning");
-const Seller = require("../../models/Seller");
+const { Earning, Withdrawal } = require("../../models/seller/Earning");
+const Seller = require("../../models/seller/Seller");
 const mongoose = require("mongoose");
 
-// 💰 Get Earnings Summary
+// ==========================================================
+// CREATE TEST EARNING (For Testing)
+// POST /api/seller/earnings/test
+// ==========================================================
+exports.createTestEarning = async (req, res) => {
+  try {
+    const sellerId = req.seller._id;
+
+    const earning = await Earning.create({
+      sellerId,
+      orderId: new mongoose.Types.ObjectId(),
+      grossAmount: 1000,
+      commission: 100,
+      netAmount: 900,
+      status: "Available",
+      type: "Sale",
+      description: "Test earning for testing",
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Test earning created",
+      data: earning,
+    });
+  } catch (error) {
+    console.error("Create test earning error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// ==========================================================
+// GET EARNINGS SUMMARY
+// GET /api/seller/earnings/summary
+// ==========================================================
 exports.getEarningsSummary = async (req, res) => {
   try {
     const sellerId = req.seller._id;
 
+    // Summary by status
     const summary = await Earning.aggregate([
       { $match: { sellerId: sellerId } },
       {
@@ -18,6 +55,7 @@ exports.getEarningsSummary = async (req, res) => {
       },
     ]);
 
+    // Total earnings
     const totalEarnings = await Earning.aggregate([
       { $match: { sellerId: sellerId } },
       {
@@ -37,7 +75,7 @@ exports.getEarningsSummary = async (req, res) => {
       },
     ]);
 
-    // Monthly earnings
+    // Monthly earnings (last 12 months)
     const monthlyEarnings = await Earning.aggregate([
       { $match: { sellerId: sellerId, status: { $in: ["Available", "Withdrawn"] } } },
       {
@@ -63,6 +101,7 @@ exports.getEarningsSummary = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Get earnings summary error:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -70,7 +109,10 @@ exports.getEarningsSummary = async (req, res) => {
   }
 };
 
-// 📋 Get Earnings List
+// ==========================================================
+// GET EARNINGS LIST
+// GET /api/seller/earnings
+// ==========================================================
 exports.getEarnings = async (req, res) => {
   try {
     const sellerId = req.seller._id;
@@ -99,6 +141,7 @@ exports.getEarnings = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Get earnings error:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -106,7 +149,10 @@ exports.getEarnings = async (req, res) => {
   }
 };
 
-// 💵 Withdraw Earnings
+// ==========================================================
+// WITHDRAW EARNINGS
+// POST /api/seller/earnings/withdraw
+// ==========================================================
 exports.withdrawEarnings = async (req, res) => {
   try {
     const sellerId = req.seller._id;
@@ -169,6 +215,7 @@ exports.withdrawEarnings = async (req, res) => {
       data: withdrawal,
     });
   } catch (error) {
+    console.error("Withdraw earnings error:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -176,7 +223,10 @@ exports.withdrawEarnings = async (req, res) => {
   }
 };
 
-// 📋 Get Withdrawal History
+// ==========================================================
+// GET WITHDRAWAL HISTORY
+// GET /api/seller/earnings/withdrawals
+// ==========================================================
 exports.getWithdrawals = async (req, res) => {
   try {
     const sellerId = req.seller._id;
@@ -203,6 +253,7 @@ exports.getWithdrawals = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Get withdrawals error:", error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -210,28 +261,78 @@ exports.getWithdrawals = async (req, res) => {
   }
 };
 
-// 💳 Add Bank Details
+// ==========================================================
+// ADD BANK DETAILS
+// PUT /api/seller/earnings/bank-details
+// ==========================================================
 exports.addBankDetails = async (req, res) => {
   try {
     const sellerId = req.seller._id;
     const { accountNumber, ifscCode, accountHolder, bankName, upiId } = req.body;
 
     const seller = await Seller.findById(sellerId);
+    
+    if (!seller) {
+      return res.status(404).json({
+        success: false,
+        message: "Seller not found",
+      });
+    }
+
     seller.bankDetails = {
-      accountNumber,
-      ifscCode,
-      accountHolder,
-      bankName,
-      upiId,
+      accountNumber: accountNumber || seller.bankDetails?.accountNumber || "",
+      ifscCode: ifscCode || seller.bankDetails?.ifscCode || "",
+      accountHolder: accountHolder || seller.bankDetails?.accountHolder || "",
+      bankName: bankName || seller.bankDetails?.bankName || "",
     };
+    
+    if (upiId) seller.upiId = upiId;
+    
     await seller.save();
 
     res.status(200).json({
       success: true,
       message: "Bank details updated successfully",
-      data: seller.bankDetails,
+      data: {
+        bankDetails: seller.bankDetails,
+        upiId: seller.upiId,
+      },
     });
   } catch (error) {
+    console.error("Add bank details error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// ==========================================================
+// GET BANK DETAILS
+// GET /api/seller/earnings/bank-details
+// ==========================================================
+exports.getBankDetails = async (req, res) => {
+  try {
+    const sellerId = req.seller._id;
+
+    const seller = await Seller.findById(sellerId).select("bankDetails upiId");
+    
+    if (!seller) {
+      return res.status(404).json({
+        success: false,
+        message: "Seller not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        bankDetails: seller.bankDetails || {},
+        upiId: seller.upiId || "",
+      },
+    });
+  } catch (error) {
+    console.error("Get bank details error:", error);
     res.status(500).json({
       success: false,
       message: error.message,

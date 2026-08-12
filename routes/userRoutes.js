@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-const protect  = require("../middleware/authMiddleware");
+//const protect  = require("../middleware/authMiddleware");
+const { protect, adminOnly } = require("../middleware/authMiddleware");
 const upload = require("../config/multer");
 
 const {

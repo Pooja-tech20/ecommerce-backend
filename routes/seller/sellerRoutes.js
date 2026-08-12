@@ -124,9 +124,7 @@ const {
   rejectSeller,
 } = require("../../controllers/seller/sellerController");
 
-const {
-  sellerAuth,
-} = require("../../middleware/seller/sellerAuth");
+const { sellerAuth } = require("../../middleware/seller/sellerAuth");
 
 // ==================== PUBLIC ====================
 
@@ -147,20 +145,13 @@ router.post("/logout", sellerAuth, logoutSeller);
 
 // ==================== ADMIN SELLER MANAGEMENT ====================
 
-router.get(
-  "/admin/sellers",
-  getAllSellers
-);
+router.get("/admin/sellers", getAllSellers);
 
-router.put(
-  "/admin/sellers/:id/approve",
-  approveSeller
-);
+// router.get("/admin/sellers/:id", getSellerDetails);
 
-router.put(
-  "/admin/sellers/:id/reject",
-  rejectSeller
-);
+router.put("/admin/sellers/:id/approve", approveSeller);
+
+router.put("/admin/sellers/:id/reject", rejectSeller);
 
 // ==================== HEALTH ====================
 

@@ -72,7 +72,10 @@ app.use(
       "http://localhost:5173",
       "http://localhost:5174",
       "http://192.168.1.24:5173",
+      "http://192.168.1.51:5173",
+      "http://192.168.1.51:5174",
       "http://192.168.1.6:5173",
+      
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

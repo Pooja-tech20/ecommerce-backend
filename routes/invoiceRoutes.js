@@ -113,28 +113,42 @@ const { protect, adminOnly } = require("../middleware/authMiddleware");
 // INVOICE ROUTES
 // ========================================
 
-// Generate invoice for a specific order
-router.post("/generate/:orderId", protect, adminOnly, generateInvoice);
+// IMPORTANT: /all MUST come before /:orderId
 
-// Get invoice JSON data for a specific order
-router.get("/order/:orderId", protect, adminOnly, getInvoiceByOrder);
-
-// Preview invoice PDF in browser
-router.get("/preview/:orderId", protect, adminOnly, getInvoice);
-
-// Download single invoice PDF
-router.get("/download/:orderId", protect, adminOnly, downloadInvoice);
-
-// Get all invoices (with search)
 router.get("/all", protect, adminOnly, getAllInvoices);
 
-// Generate invoices for all/filtered orders
-router.post("/generate-all", protect, adminOnly, generateAllInvoices);
+router.get("/order/:orderId", protect, adminOnly, getInvoiceByOrder);
 
-// Download filtered invoices as ONE PDF
-router.post("/download-filtered", protect, adminOnly, downloadFilteredInvoices);
+router.get("/preview/:orderId", protect, adminOnly, getInvoice);
 
-// Download all invoices as ONE PDF
-router.post("/download-all", protect, adminOnly, downloadAllInvoices);
+router.get("/download/:orderId", protect, adminOnly, downloadInvoice);
+
+router.post(
+  "/generate/:orderId",
+  protect,
+  adminOnly,
+  generateInvoice
+);
+
+router.post(
+  "/generate-all",
+  protect,
+  adminOnly,
+  generateAllInvoices
+);
+
+router.post(
+  "/download-filtered",
+  protect,
+  adminOnly,
+  downloadFilteredInvoices
+);
+
+router.post(
+  "/download-all",
+  protect,
+  adminOnly,
+  downloadAllInvoices
+);
 
 module.exports = router;
